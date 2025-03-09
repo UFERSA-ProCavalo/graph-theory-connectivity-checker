@@ -1,0 +1,10 @@
+# This is a sample directed graph
+# Lines starting with # are comments
+
+# Below is a directed graph
+A -> B
+B -> C
+C -> D
+D -> A
+B -> E
+E -> C

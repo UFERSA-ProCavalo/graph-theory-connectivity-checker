@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Graph Theory Connectivity Checker</title>
+        <!-- Include Viz.js for graph rendering -->
+        <script src="https://unpkg.com/viz.js@2.1.2/viz.js"></script>
+        <script src="https://unpkg.com/viz.js@2.1.2/full.render.js"></script>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 1000px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .section {
+                margin-bottom: 30px;
+                padding: 15px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+            h1 {
+                text-align: center;
+                color: #333;
+            }
+            textarea {
+                width: 100%;
+                height: 150px;
+                font-family: monospace;
+                margin: 10px 0;
+            }
+            button {
+                padding: 8px 15px;
+                background-color: #4caf50;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-right: 5px;
+                margin-bottom: 5px;
+            }
+            button:hover {
+                background-color: #45a049;
+            }
+            button:disabled {
+                background-color: #cccccc;
+                cursor: not-allowed;
+            }
+            #result {
+                font-family: monospace;
+                white-space: pre-wrap;
+                background-color: #f5f5f5;
+                padding: 10px;
+                border-radius: 5px;
+                margin-top: 10px;
+            }
+            #graph-visualization {
+                border: 1px solid #ddd;
+                min-height: 400px;
+                margin-top: 20px;
+                padding: 10px;
+                overflow: auto;
+                text-align: center;
+            }
+            #file-input {
+                display: none;
+            }
+            .file-input-label {
+                padding: 8px 15px;
+                background-color: #2196f3;
+                color: white;
+                border-radius: 4px;
+                cursor: pointer;
+                display: inline-block;
+                margin-right: 5px;
+            }
+            .file-input-label:hover {
+                background-color: #0b7dda;
+            }
+            .algorithm-buttons {
+                margin-top: 10px;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 10px;
+            }
+            .step-controls {
+                margin-top: 10px;
+                display: none;
+            }
+            .step-controls button {
+                background-color: #ff9800;
+            }
+            .step-controls button:hover {
+                background-color: #e68a00;
+            }
+            .visualization-options {
+                margin-top: 10px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .checkbox-container {
+                display: flex;
+                align-items: center;
+            }
+            .vertex-highlight {
+                fill: #ff6347 !important;
+                stroke: #ff0000 !important;
+                stroke-width: 3px !important;
+                transition: all 0.3s ease;
+            }
+            .edge-highlight {
+                stroke: #ff6347 !important;
+                stroke-width: 3px !important;
+                transition: all 0.3s ease;
+            }
+            .visited-vertex {
+                fill: #32cd32 !important;
+                stroke: #006400 !important;
+            }
+            .current-status {
+                margin-top: 10px;
+                font-weight: bold;
+                color: #2196f3;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Graph Theory Connectivity Checker</h1>
+
+        <div class="section">
+            <h2>Graph Input</h2>
+            <p>Enter graph definition or load from file:</p>
+
+            <label class="file-input-label" for="file-input"
+                >Load from file</label
+            >
+            <input type="file" id="file-input" accept=".txt" />
+            <button id="example-btn">Load Example</button>
+            <textarea
+                id="graph-input"
+                placeholder="Enter graph definition here. Example:
+A - B
+B - C
+C - D
+A - D"
+            ></textarea>
+            <button id="build-graph-btn">Build Graph</button>
+        </div>
+
+        <div class="section">
+            <h2>Graph Visualization</h2>
+            <div id="graph-visualization"></div>
+        </div>
+
+        <div class="section">
+            <h2>Graph Algorithms</h2>
+            <div class="algorithm-buttons">
+                <button id="dfs-btn" disabled>Run DFS</button>
+                <button id="bfs-btn" disabled>Run BFS</button>
+                <button id="connectivity-btn" disabled>
+                    Check Connectivity
+                </button>
+                <input
+                    type="text"
+                    id="start-vertex"
+                    placeholder="Starting vertex"
+                />
+                <div class="checkbox-container">
+                    <input type="checkbox" id="step-by-step" />
+                    <label for="step-by-step">Step-by-step visualization</label>
+                </div>
+            </div>
+            <div class="step-controls" id="step-controls">
+                <button id="next-step-btn">Next Step</button>
+                <button id="play-all-btn">Play All</button>
+                <button id="reset-btn">Reset</button>
+                <div class="current-status" id="current-status"></div>
+            </div>
+            <div id="result"></div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                let currentGraph = null;
+                let vizInstance = new Viz();
+                let algorithmSteps = [];
+                let currentStepIndex = -1;
+                let animationTimeout = null;
+                let visitedVertices = new Set();
+                let processingQueue = [];
+                let currentAlgorithm = null;
+
+                // DOM elements
+                const graphInput = document.getElementById("graph-input");
+                const buildGraphBtn = document.getElementById("build-graph-btn");
+                const fileInput = document.getElementById("file-input");
+                const exampleBtn = document.getElementById("example-btn");
+                const graphVisualization = document.getElementById("graph-visualization");
+                const dfsBtn = document.getElementById("dfs-btn");
+                const bfsBtn = document.getElementById("bfs-btn");
+                const connectivityBtn = document.getElementById("connectivity-btn");
+                const startVertexInput = document.getElementById("start-vertex");
+                const resultDiv = document.getElementById("result");
+                const stepByStepCheckbox = document.getElementById("step-by-step");
+                const stepControls = document.getElementById("step-controls");
+                const nextStepBtn = document.getElementById("next-step-btn");
+                const playAllBtn = document.getElementById("play-all-btn");
+                const resetBtn = document.getElementById("reset-btn");
+                const currentStatus = document.getElementById("current-status");
+
+                // Load example
+                exampleBtn.addEventListener("click", () => {
+                    graphInput.value = `# Example undirected graph
+A - B
+B - C
+C - D
+D - A
+B - D`;
+                });
+
+                // File input handling
+                fileInput.addEventListener("change", function (e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        graphInput.value = e.target.result;
+                    };
+                    reader.readAsText(file);
+                });
+
+                // Step-by-step checkbox
+                stepByStepCheckbox.addEventListener("change", function() {
+                    if (this.checked) {
+                        stepControls.style.display = 'block';
+                    } else {
+                        stepControls.style.display = 'none';
+                    }
+                });
+
+                // Build graph from input
+                buildGraphBtn.addEventListener("click", () => {
+                    try {
+                        const input = graphInput.value.trim();
+                        if (!input) {
+                            setResult("Error: Graph input is empty.");
+                            return;
+                        }
+
+                        currentGraph = buildGraph(input);
+
+                        if (currentGraph) {
+                            renderGraph(currentGraph);
+                            enableAlgorithmButtons();
+                            setResult("Graph built successfully!");
+                            resetVisualization();
+                        }
+                    } catch (error) {
+                        setResult(`Error: ${error.message}`);
+                    }
+                });
+
+                // Algorithm buttons
+                dfsBtn.addEventListener("click", () => {
+                    const startVertex = getStartVertex();
+                    if (!startVertex) return;
+
+                    currentAlgorithm = "dfs";
+                    resetVisualization();
+                    
+                    if (stepByStepCheckbox.checked) {
+                        prepareDfsSteps(currentGraph, startVertex);
+                        setStatus("DFS initialized. Click 'Next Step' to begin traversal.");
+                    } else {
+                        const visited = [];
+                        dfs(currentGraph, startVertex, vertex => visited.push(vertex));
+                        setResult(`DFS traversal from ${startVertex}: ${visited.join(" -> ")}`);
+                    }
+                });
+
+                bfsBtn.addEventListener("click", () => {
+                    const startVertex = getStartVertex();
+                    if (!startVertex) return;
+
+                    currentAlgorithm = "bfs";
+                    resetVisualization();
+                    
+                    if (stepByStepCheckbox.checked) {
+                        prepareBfsSteps(currentGraph, startVertex);
+                        setStatus("BFS initialized. Click 'Next Step' to begin traversal.");
+                    } else {
+                        const visited = [];
+                        bfs(currentGraph, startVertex, vertex => visited.push(vertex));
+                        setResult(`BFS traversal from ${startVertex}: ${visited.join(" -> ")}`);
+                    }
+                });
+
+                connectivityBtn.addEventListener("click", () => {
+                    const isConnected = checkConnectivity(currentGraph);
+                    setResult(`Graph connectivity: ${isConnected ? "Connected" : "Not connected"}`);
+                });
+
+                // Step control buttons
+                nextStepBtn.addEventListener("click", executeNextStep);
+                
+                playAllBtn.addEventListener("click", function() {
+                    playAllSteps();
+                });
+                
+                resetBtn.addEventListener("click", function() {
+                    resetVisualization();
+                    renderGraph(currentGraph);
+                });
+
+                // Helper functions
+                function setResult(text) {
+                    resultDiv.textContent = text;
+                }
+
+                function setStatus(text) {
+                    currentStatus.textContent = text;
+                }
+
+                function enableAlgorithmButtons() {
+                    dfsBtn.disabled = false;
+                    bfsBtn.disabled = false;
+                    connectivityBtn.disabled = false;
+                }
+
+                function getStartVertex() {
+                    const vertex = startVertexInput.value.trim();
+                    if (!vertex) {
+                        setResult("Please specify a starting vertex.");
+                        return null;
+                    }
+                    if (!currentGraph.vertices.has(vertex)) {
+                        setResult(`Error: Vertex "${vertex}" not found in the graph.`);
+                        return null;
+                    }
+                    return vertex;
+                }
+
+                function resetVisualization() {
+                    algorithmSteps = [];
+                    currentStepIndex = -1;
+                    visitedVertices = new Set();
+                    processingQueue = [];
+                    clearTimeout(animationTimeout);
+                    setStatus("");
+                }
+
+                // Graph implementation
+                class Graph {
+                    constructor(isDirected = false) {
+                        this.vertices = new Set();
+                        this.edges = [];
+                        this.isDirected = isDirected;
+                    }
+
+                    addVertex(vertex) {
+                        this.vertices.add(vertex);
+                    }
+
+                    addEdge(source, destination, weight = 1) {
+                        this.addVertex(source);
+                        this.addVertex(destination);
+
+                        const edgeExists = this.edges.some(
+                            edge => edge.source === source && edge.destination === destination
+                        );
+
+                        if (!edgeExists) {
+                            this.edges.push({ source, destination, weight });
+                        }
+
+                        if (!this.isDirected) {
+                            const reverseEdgeExists = this.edges.some(
+                                edge => edge.source === destination && edge.destination === source
+                            );
+
+                            if (!reverseEdgeExists) {
+                                this.edges.push({ source: destination, destination: source, weight });
+                            }
+                        }
+                    }
+
+                    getNeighbors(vertex) {
+                        return this.edges
+                            .filter(edge => edge.source === vertex)
+                            .map(edge => edge.destination);
+                    }
+                }
+
+                // Build graph from text input
+                function buildGraph(text) {
+                    const lines = text.split("\n");
+                    let isDirected = null;
+
+                    for (const line of lines) {
+                        const trimmedLine = line.trim();
+                        if (trimmedLine === "" || trimmedLine.startsWith("#")) continue;
+
+                        if (trimmedLine.includes("->")) {
+                            if (isDirected === false) {
+                                throw new Error(
+                                    "Mixed graph types: Cannot have both directed and undirected edges"
+                                );
+                            }
+                            isDirected = true;
+                        } else if (trimmedLine.includes(" - ")) {
+                            if (isDirected === true) {
+                                throw new Error(
+                                    "Mixed graph types: Cannot have both directed and undirected edges"
+                                );
+                            }
+                            isDirected = false;
+                        }
+                    }
+
+                    if (isDirected === null) return new Graph();
+
+                    const graph = new Graph(isDirected);
+                    const processedEdges = new Set();
+
+                    for (const line of lines) {
+                        const trimmedLine = line.trim();
+                        if (trimmedLine === "" || trimmedLine.startsWith("#")) continue;
+
+                        let source, destination;
+
+                        if (isDirected) {
+                            [source, destination] = trimmedLine
+                                .split("->")
+                                .map(s => s.trim());
+                        } else {
+                            [source, destination] = trimmedLine
+                                .split(" - ")
+                                .map(s => s.trim());
+
+                            const edgeKey1 = `${source}-${destination}`;
+                            const edgeKey2 = `${destination}-${source}`;
+
+                            if (processedEdges.has(edgeKey1) || processedEdges.has(edgeKey2)) {
+                                continue;
+                            }
+
+                            processedEdges.add(edgeKey1);
+                        }
+
+                        graph.addEdge(source, destination);
+                    }
+
+                    return graph;
+                }
+
+                // Generate DOT representation of the graph
+                function generateDotGraph(graph, highlightedVertex = null, highlightedEdges = [], visitedVertices = []) {
+                    const isDirected = graph.isDirected;
+                    let dotContent = `${isDirected ? 'digraph' : 'graph'} G {\n`;
+                    dotContent += '  node [style=filled, fillcolor="lightblue", fontname="Arial"];\n';
+                    dotContent += `  edge [${isDirected ? 'arrowhead=vee, arrowsize=0.8' : ''}];\n`;
+                    
+                    // Add vertices with potential highlighting
+                    for (const vertex of graph.vertices) {
+                        let nodeAttributes = '';
+                        
+                        if (vertex === highlightedVertex) {
+                            nodeAttributes = ' [fillcolor="#ff6347", color="red", penwidth=3]';
+                        } else if (visitedVertices.includes(vertex)) {
+                            nodeAttributes = ' [fillcolor="#32cd32", color="#006400"]';
+                        }
+                        
+                        dotContent += `  "${vertex}"${nodeAttributes};\n`;
+                    }
+                    
+                    // Process edges with deduplication
+                    const processedEdges = new Set();
+                    
+                    for (const edge of graph.edges) {
+                        const edgeKey = isDirected 
+                            ? `${edge.source}->${edge.destination}` 
+                            : `${edge.source}--${edge.destination}`;
+                        const reverseKey = `${edge.destination}--${edge.source}`;
+                        
+                        if (!isDirected && processedEdges.has(reverseKey)) {
+                            continue;
+                        }
+                        
+                        if (!processedEdges.has(edgeKey)) {
+                            processedEdges.add(edgeKey);
+                            
+                            const edgeOp = isDirected ? '->' : '--';
+                            
+                            // Check if this edge should be highlighted
+                            let edgeAttributes = '';
+                            if (isEdgeHighlighted(edge.source, edge.destination, highlightedEdges)) {
+                                edgeAttributes = ' [color="#ff6347", penwidth=3]';
+                            }
+                            
+                            dotContent += `  "${edge.source}" ${edgeOp} "${edge.destination}"${edgeAttributes};\n`;
+                        }
+                    }
+                    
+                    dotContent += '}';
+                    return dotContent;
+                }
+                
+                function isEdgeHighlighted(source, destination, highlightedEdges) {
+                    return highlightedEdges.some(
+                        edge => (edge.source === source && edge.destination === destination) ||
+                              (!currentGraph.isDirected && edge.source === destination && edge.destination === source)
+                    );
+                }
+
+                // Render graph with viz.js
+                function renderGraph(graph, highlightedVertex = null, highlightedEdges = [], visitedVertices = []) {
+                    const dotGraph = generateDotGraph(graph, highlightedVertex, highlightedEdges, visitedVertices);
+                    
+                    vizInstance.renderSVGElement(dotGraph)
+                        .then(element => {
+                            graphVisualization.innerHTML = '';
+                            graphVisualization.appendChild(element);
+                        })
+                        .catch(error => {
+                            console.error("Error rendering graph:", error);
+                            graphVisualization.innerHTML = `<p>Error rendering graph: ${error.message}</p>`;
+                        });
+                }
+
+                // DFS algorithm
+                function dfs(graph, startVertex, callback) {
+                    if (!graph.vertices.has(startVertex)) return new Set();
+
+                    const visited = new Set();
+                    const stack = [startVertex];
+
+                    while (stack.length > 0) {
+                        const vertex = stack.pop();
+
+                        if (!visited.has(vertex)) {
+                            visited.add(vertex);
+                            callback && callback(vertex);
+
+                            const neighbors = graph.getNeighbors(vertex);
+                            for (let i = neighbors.length - 1; i >= 0; i--) {
+                                const neighbor = neighbors[i];
+                                if (!visited.has(neighbor)) {
+                                    stack.push(neighbor);
+                                }
+                            }
+                        }
+                    }
+
+                    return visited;
+                }
+
+                // Prepare DFS steps for visualization
+                function prepareDfsSteps(graph, startVertex) {
+                    algorithmSteps = [];
+                    visitedVertices = new Set();
+                    const stack = [startVertex];
+                    
+                    // Initial step - just show the start vertex
+                    algorithmSteps.push({
+                        type: 'initialize',
+                        vertex: startVertex,
+                        stack: [...stack],
+                        visited: new Set(),
+                        highlightedEdges: []
+                    });
+
+                    // Simulate DFS algorithm execution and record steps
+                    while (stack.length > 0) {
+                        const vertex = stack.pop();
+
+                        if (!visitedVertices.has(vertex)) {
+                            // Vertex processing step
+                            visitedVertices.add(vertex);
+                            algorithmSteps.push({
+                                type: 'visit',
+                                vertex: vertex,
+                                stack: [...stack],
+                                visited: new Set(visitedVertices),
+                                highlightedEdges: []
+                            });
+
+                            // Get and process neighbors
+                            const neighbors = graph.getNeighbors(vertex);
+                            const highlightedEdges = [];
+
+                            // Add neighbors to stack in reverse order for correct DFS
+                            for (let i = neighbors.length - 1; i >= 0; i--) {
+                                const neighbor = neighbors[i];
+                                
+                                if (!visitedVertices.has(neighbor)) {
+                                    stack.push(neighbor);
+                                    highlightedEdges.push({ 
+                                        source: vertex, 
+                                        destination: neighbor 
+                                    });
+                                }
+                            }
+
+                            // Only add the exploring step if there are neighbors to explore
+                            if (highlightedEdges.length > 0) {
+                                algorithmSteps.push({
+                                    type: 'explore',
+                                    vertex: vertex,
+                                    stack: [...stack],
+                                    visited: new Set(visitedVertices),
+                                    highlightedEdges: highlightedEdges
+                                });
+                            }
+                        }
+                    }
+                }
+
+                // BFS algorithm
+                function bfs(graph, startVertex, callback) {
+                    if (!graph.vertices.has(startVertex)) return new Set();
+
+                    const visited = new Set();
+                    const queue = [startVertex];
+                    visited.add(startVertex);
+
+                    while (queue.length > 0) {
+                        const vertex = queue.shift();
+                        callback && callback(vertex);
+
+                        const neighbors = graph.getNeighbors(vertex);
+                        for (const neighbor of neighbors) {
+                            if (!visited.has(neighbor)) {
+                                visited.add(neighbor);
+                                queue.push(neighbor);
+                            }
+                        }
+                    }
+
+                    return visited;
+                }
+
+                // Prepare BFS steps for visualization
+                function prepareBfsSteps(graph, startVertex) {
+                    algorithmSteps = [];
+                    visitedVertices = new Set();
+                    const queue = [startVertex];
+                    visitedVertices.add(startVertex);
+                    
+                    // Initial step - just show the start vertex
+                    algorithmSteps.push({
+                        type: 'initialize',
+                        vertex: startVertex,
+                        queue: [...queue],
+                        visited: new Set(visitedVertices),
+                        highlightedEdges: []
+                    });
+
+                    // Simulate BFS algorithm execution and record steps
+                    while (queue.length > 0) {
+                        const vertex = queue.shift();
+
+                        // Vertex processing step
+                        algorithmSteps.push({
+                            type: 'visit',
+                            vertex: vertex,
+                            queue: [...queue],
+                            visited: new Set(visitedVertices),
+                            highlightedEdges: []
+                        });
+
+                        // Get and process neighbors
+                        const neighbors = graph.getNeighbors(vertex);
+                        const highlightedEdges = [];
+
+                        // Process each neighbor
+                        for (const neighbor of neighbors) {
+                            if (!visitedVertices.has(neighbor)) {
+                                visitedVertices.add(neighbor);
+                                queue.push(neighbor);
+                                highlightedEdges.push({ 
+                                    source: vertex, 
+                                    destination: neighbor 
+                                });
+                            }
+                        }
+
+                        // Only add the exploring step if there are neighbors to explore
+                        if (highlightedEdges.length > 0) {
+                            algorithmSteps.push({
+                                type: 'explore',
+                                vertex: vertex,
+                                queue: [...queue],
+                                visited: new Set(visitedVertices),
+                                highlightedEdges: highlightedEdges
+                            });
+                        }
+                    }
+                }
+
+                // Execute next step in visualization
+                function executeNextStep() {
+                    if (currentStepIndex >= algorithmSteps.length - 1) {
+                        setStatus("Algorithm completed!");
+                        return;
+                    }
+
+                    currentStepIndex++;
+                    const step = algorithmSteps[currentStepIndex];
+                    const visitedArray = Array.from(step.visited);
+                    const container = currentAlgorithm === "dfs" ? "Stack" : "Queue";
+                    const containerContents = currentAlgorithm === "dfs" ? step.stack : step.queue;
+
+                    switch (step.type) {
+                        case 'initialize':
+                            setStatus(`Starting ${currentAlgorithm.toUpperCase()} from vertex ${step.vertex}`);
+                            break;
+                        case 'visit':
+                            setStatus(`Visiting vertex: ${step.vertex}. ${container}: [${containerContents.join(', ')}]`);
+                            break;
+                        case 'explore':
+                            setStatus(`Exploring neighbors of ${step.vertex}. ${container}: [${containerContents.join(', ')}]`);
+                            break;
+                    }
+
+                    renderGraph(currentGraph, step.vertex, step.highlightedEdges, visitedArray);
+                }
+
+                // Play all remaining steps with animation
+                function playAllSteps() {
+                    if (currentStepIndex >= algorithmSteps.length - 1) {
+                        return;
+                    }
+
+                    executeNextStep();
+
+                    animationTimeout = setTimeout(() => {
+                        playAllSteps();
+                    }, 1000);
+                }
+
+                // Check connectivity
+                function checkConnectivity(graph) {
+                    const vertices = Array.from(graph.vertices);
+                    if (vertices.length === 0) return true;
+
+                    const visited = dfs(graph, vertices[0]);
+                    return visited.size === graph.vertices.size;
+                }
+            });
+        </script>
+    </body>
+</html>
