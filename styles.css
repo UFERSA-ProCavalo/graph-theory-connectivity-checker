@@ -157,3 +157,30 @@ button.algorithm-btn.selected {
 .toast-info {
     background-color: #2196f3;
 }
+
+/* Add this to your styles.css file or inline in the HTML */
+.connectivity-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+#start-vertex-select {
+    padding: 8px 15px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+#start-vertex-select:hover {
+    background-color: #45a049;
+}
+
+#start-vertex-select:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}

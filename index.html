@@ -68,9 +68,16 @@ A - D 4"
                     <div class="step-title">
                         Passo 2: Verificar Conectividade
                     </div>
-                    <button id="connectivity-btn" disabled>
-                        Verificar Conectividade
-                    </button>
+                    <div class="connectivity-controls">
+                        <select id="start-vertex-select" disabled>
+                            <option value="">
+                                Selecione o vértice inicial
+                            </option>
+                        </select>
+                        <button id="connectivity-btn" disabled>
+                            Verificar Conectividade
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -100,6 +107,9 @@ A - D 4"
                 );
                 const dfsBtn = document.getElementById("dfs-btn");
                 const bfsBtn = document.getElementById("bfs-btn");
+                const startVertexSelect = document.getElementById(
+                    "start-vertex-select"
+                );
                 const connectivityBtn =
                     document.getElementById("connectivity-btn");
                 const stepControls = document.getElementById("step-controls");
@@ -149,6 +159,7 @@ B - D 6`;
                         if (currentGraph) {
                             renderGraph(currentGraph);
                             enableAlgorithmButtons();
+                            populateStartVertexDropdown(currentGraph);
                             showToast(
                                 "Grafo construído com sucesso!",
                                 "success"
@@ -185,11 +196,26 @@ B - D 6`;
 
                     // Habilitar verificação de conectividade
                     connectivityBtn.disabled = false;
+                    startVertexSelect.disabled = false;
                 }
 
                 // Verificação de conectividade
                 connectivityBtn.addEventListener("click", () => {
-                    const isConnected = checkConnectivity(currentGraph);
+                    const startVertex = startVertexSelect.value;
+
+                    if (!startVertex) {
+                        showToast(
+                            "Por favor, selecione um vértice inicial.",
+                            "error"
+                        );
+                        return;
+                    }
+
+                    const isConnected = checkConnectivity(
+                        currentGraph,
+                        currentAlgorithm,
+                        startVertex
+                    );
 
                     // Mostrar resultado como toast e no div de resultado
                     const message = `O grafo é ${
@@ -201,8 +227,6 @@ B - D 6`;
                     showToast(message, isConnected ? "success" : "error");
 
                     // Preparar para visualização passo a passo
-                    const startVertex = Array.from(currentGraph.vertices)[0];
-
                     if (currentAlgorithm === "dfs") {
                         prepareDfsSteps(currentGraph, startVertex);
                     } else {
@@ -276,6 +300,13 @@ B - D 6`;
                     // Desabilitar verificação de conectividade
                     connectivityBtn.disabled = true;
 
+                    // Reset the start vertex dropdown
+                    if (currentGraph) {
+                        populateStartVertexDropdown(currentGraph);
+                    } else {
+                        startVertexSelect.disabled = true;
+                    }
+
                     // Desabilitar controles de passo
                     disableStepControls();
                 }
@@ -308,6 +339,25 @@ B - D 6`;
                     playAllBtn.disabled = true;
                     resetBtn.disabled = true;
                     currentStatus.textContent = "";
+                }
+
+                // Function to populate the start vertex dropdown
+                function populateStartVertexDropdown(graph) {
+                    startVertexSelect.innerHTML =
+                        '<option value="">Selecione o vértice inicial</option>';
+
+                    if (graph && graph.vertices.size > 0) {
+                        const vertices = Array.from(graph.vertices).sort();
+                        vertices.forEach((vertex) => {
+                            const option = document.createElement("option");
+                            option.value = vertex;
+                            option.textContent = vertex;
+                            startVertexSelect.appendChild(option);
+                        });
+                        startVertexSelect.disabled = false;
+                    } else {
+                        startVertexSelect.disabled = true;
+                    }
                 }
 
                 // Rest of the code remains unchanged
@@ -549,7 +599,7 @@ B - D 6`;
                 }
 
                 // DFS algorithm
-                function dfs(graph, startVertex, callback) {
+                function dfs(graph, startVertex) {
                     if (!graph.vertices.has(startVertex)) return new Set();
 
                     const visited = new Set();
@@ -560,7 +610,6 @@ B - D 6`;
 
                         if (!visited.has(vertex)) {
                             visited.add(vertex);
-                            callback && callback(vertex);
 
                             const neighbors = graph.getNeighbors(vertex);
                             for (let i = neighbors.length - 1; i >= 0; i--) {
@@ -644,7 +693,7 @@ B - D 6`;
                 }
 
                 // BFS algorithm
-                function bfs(graph, startVertex, callback) {
+                function bfs(graph, startVertex) {
                     if (!graph.vertices.has(startVertex)) return new Set();
 
                     const visited = new Set();
@@ -653,7 +702,6 @@ B - D 6`;
 
                     while (queue.length > 0) {
                         const vertex = queue.shift();
-                        callback && callback(vertex);
 
                         const neighbors = graph.getNeighbors(vertex);
                         for (const neighbor of neighbors) {
@@ -792,11 +840,18 @@ B - D 6`;
                 }
 
                 // Verificar conectividade
-                function checkConnectivity(graph) {
+                function checkConnectivity(graph, algorithm, startVertex) {
                     const vertices = Array.from(graph.vertices);
                     if (vertices.length === 0) return true;
 
-                    const visited = dfs(graph, vertices[0]);
+                    let visited;
+                    if (algorithm === "dfs") {
+                        visited = dfs(graph, startVertex);
+                    } else {
+                        visited = bfs(graph, startVertex);
+                    }
+                    resetVisualization();
+                    renderGraph(currentGraph);
                     return visited.size === graph.vertices.size;
                 }
             });

@@ -20,13 +20,13 @@
                 box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
                 overflow: hidden;
                 margin: 40px auto;
-                max-width: 1000px;
+                max-width: 1600px; /* Increased from 1000px */
             }
             .carousel-inner {
                 min-height: 600px;
             }
             .carousel-item {
-                padding: 40px 60px;
+                padding: 40px 100px; /* Increased horizontal padding */
                 text-align: center;
             }
             h1,
@@ -37,29 +37,49 @@
             pre {
                 background-color: #f5f5f5;
                 border-left: 4px solid #4caf50;
-                padding: 15px;
+                padding: 20px; /* Increased padding */
                 border-radius: 4px;
                 text-align: left;
-                margin: 20px 0;
+                margin: 10px 0;
                 white-space: pre-wrap;
+                font-size: 14px; /* Added font size */
+                line-height: 1.5; /* Added line height */
+                font-family: "Consolas", monospace; /* Better font for code */
             }
             .code-container {
                 display: flex;
                 flex-direction: row;
-                gap: 20px;
+                gap: 40px; /* Increased from 20px */
                 text-align: left;
+                margin: 30px 0;
+                padding: 20px;
+                background-color: #1e1e1e;
+                border-radius: 12px;
             }
             .code-column {
                 flex: 1;
-                padding: 10px;
+                padding: 25px; /* Increased from 10px */
+                background-color: #252526;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             }
             .pseudo-code {
-                background-color: #f8f9fa;
-                border-left: 4px solid #007bff;
+                background-color: #1e1e1e;
+                border-left: 4px solid #569cd6;
+                color: #d4d4d4;
+                font-family: "Consolas", "Monaco", "Courier New", monospace;
+                font-size: 14px;
+                line-height: 1.6;
+                padding: 20px;
             }
             .real-code {
-                background-color: #f8f9fa;
-                border-left: 4px solid #dc3545;
+                background-color: #1e1e1e;
+                border-left: 4px solid #ce9178;
+                color: #d4d4d4;
+                font-family: "Consolas", "Monaco", "Courier New", monospace;
+                font-size: 14px;
+                line-height: 1.6;
+                padding: 20px;
             }
             .card {
                 margin-bottom: 20px;
@@ -86,7 +106,6 @@
                 top: 0px;
                 left: 50%;
                 transform: translateX(-50%);
-                background-color: rgba(255, 255, 255, 0.9);
                 padding: 10px;
                 border-radius: 30px;
                 z-index: 100;
@@ -97,6 +116,44 @@
             .highlight {
                 background-color: #ffeb3b;
                 color: #333;
+            }
+            /* Added styling for code headers */
+            .code-column h5 {
+                color: #ffffff;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #3c3c3c;
+                font-weight: 600;
+            }
+            /* Added styling for code comments */
+            .pseudo-code code,
+            .real-code code {
+                display: block;
+                overflow-x: auto;
+            }
+            /* Syntax highlighting for both pseudo and real code */
+            .code-keyword {
+                color: #569cd6; /* Blue for keywords */
+            }
+
+            .code-function {
+                color: #dcdcaa; /* Yellow for functions */
+            }
+
+            .code-string {
+                color: #ce9178; /* Orange for strings */
+            }
+
+            .code-comment {
+                color: #6a9955; /* Green for comments */
+            }
+
+            .code-operator {
+                color: #d4d4d4; /* Light grey for operators */
+            }
+
+            .code-variable {
+                color: #9cdcfe; /* Light blue for variables */
             }
         </style>
     </head>
@@ -176,61 +233,61 @@
                 </div>
 
                 <!-- Slide 3: DFS Pseudocódigo vs. Código Real -->
-                <div class="carousel-item">
+                <div class="carousel-item pseudocodigo">
                     <h2>DFS: Pseudocódigo vs. Código Implementado</h2>
                     <div class="code-container">
                         <div class="code-column">
                             <h5>Pseudocódigo</h5>
                             <pre class="pseudo-code"><code>
-função DFS(grafo, verticeInicial):
-    visitados = novo Conjunto()
+<span class="code-keyword">função</span> <span class="code-function">DFS</span>(<span class="code-variable">grafo</span>, <span class="code-variable">verticeInicial</span>):
+    <span class="code-variable">visitados</span> = <span class="code-keyword">novo</span> Conjunto()
     
-    pilha = nova Pilha()
-    pilha.push(verticeInicial)
+    <span class="code-variable">pilha</span> = <span class="code-keyword">nova</span> Pilha()
+    <span class="code-function">adicionar_na_pilha</span>(<span class="code-variable">verticeInicial</span>)
     
-    enquanto pilha não estiver vazia:
-        vertice = pilha.pop()
+    <span class="code-keyword">enquanto</span> <span class="code-variable">pilha</span> não estiver vazia:
+        <span class="code-variable">vertice</span> = <span class="code-function">estourar_topo_da_pilha</span>()
         
-        se vertice não estiver em visitados:
-            adiciona vertice ao conjunto visitados
-            processaVertice(vertice)
+        <span class="code-keyword">se</span> <span class="code-variable">vertice</span> não estiver em <span class="code-variable">visitados</span>:
+            <span class="code-function">adiciona</span> <span class="code-variable">vertice</span> ao conjunto <span class="code-variable">visitados</span>
+            <span class="code-function">processaVertice</span>(<span class="code-variable">vertice</span>)
             
-            para cada vizinho de vertice no grafo:
-                se vizinho não estiver em visitados E
-                   vizinho não estiver na pilha:
-                    pilha.push(vizinho)
+            <span class="code-keyword">para</span> cada <span class="code-variable">vizinho</span> de <span class="code-variable">vertice</span> no <span class="code-variable">grafo</span>:
+                <span class="code-keyword">se</span> <span class="code-variable">vizinho</span> não estiver em <span class="code-variable">visitados</span> E
+                   <span class="code-variable">vizinho</span> não estiver na <span class="code-variable">pilha</span>:
+                    <span class="code-function">adiciona_a_pilha</span>(<span class="code-variable">vizinho</span>)
     
-    retorna visitados</code></pre>
+    <span class="code-keyword">retorna</span> <span class="code-variable">visitados</span></code></pre>
                         </div>
                         <div class="code-column">
                             <h5>Implementação JavaScript</h5>
                             <pre class="real-code"><code>
-function dfs(graph, startVertex, callback) {
-    if (!graph.vertices.has(startVertex)) 
-        return new Set();
+<span class="code-keyword">function</span> <span class="code-function">dfs</span>(<span class="code-variable">graph</span>, <span class="code-variable">startVertex</span>, <span class="code-variable">callback</span>) {
+    <span class="code-keyword">if</span> (!<span class="code-variable">graph</span>.<span class="code-function">vertices</span>.<span class="code-function">has</span>(<span class="code-variable">startVertex</span>)) 
+        <span class="code-keyword">return</span> <span class="code-keyword">new</span> <span class="code-function">Set</span>();
 
-    const visited = new Set();
-    const stack = [startVertex];
+    <span class="code-keyword">const</span> <span class="code-variable">visited</span> = <span class="code-keyword">new</span> <span class="code-function">Set</span>();
+    <span class="code-keyword">const</span> <span class="code-variable">stack</span> = [<span class="code-variable">startVertex</span>];
 
-    while (stack.length > 0) {
-        const vertex = stack.pop();
+    <span class="code-keyword">while</span> (<span class="code-variable">stack</span>.<span class="code-variable">length</span> > 0) {
+        <span class="code-keyword">const</span> <span class="code-variable">vertex</span> = <span class="code-variable">stack</span>.<span class="code-function">pop</span>();
 
-        if (!visited.has(vertex)) {
-            visited.add(vertex);
-            callback && callback(vertex);
+        <span class="code-keyword">if</span> (!<span class="code-variable">visited</span>.<span class="code-function">has</span>(<span class="code-variable">vertex</span>)) {
+            <span class="code-variable">visited</span>.<span class="code-function">add</span>(<span class="code-variable">vertex</span>);
+            <span class="code-variable">callback</span> && <span class="code-variable">callback</span>(<span class="code-variable">vertex</span>);
 
-            const neighbors = graph.getNeighbors(vertex);
-            for (let i = neighbors.length - 1; i >= 0; i--) {
-                const neighbor = neighbors[i];
-                if (!visited.has(neighbor) && 
-                    !stack.includes(neighbor)) {
-                    stack.push(neighbor);
+            <span class="code-keyword">const</span> <span class="code-variable">neighbors</span> = <span class="code-variable">graph</span>.<span class="code-function">getNeighbors</span>(<span class="code-variable">vertex</span>);
+            <span class="code-keyword">for</span> (<span class="code-keyword">let</span> <span class="code-variable">i</span> = <span class="code-variable">neighbors</span>.<span class="code-variable">length</span> - 1; <span class="code-variable">i</span> >= 0; <span class="code-variable">i</span>--) {
+                <span class="code-keyword">const</span> <span class="code-variable">neighbor</span> = <span class="code-variable">neighbors</span>[<span class="code-variable">i</span>];
+                <span class="code-keyword">if</span> (!<span class="code-variable">visited</span>.<span class="code-function">has</span>(<span class="code-variable">neighbor</span>) && 
+                    !<span class="code-variable">stack</span>.<span class="code-function">includes</span>(<span class="code-variable">neighbor</span>)) {
+                    <span class="code-variable">stack</span>.<span class="code-function">push</span>(<span class="code-variable">neighbor</span>);
                 }
             }
         }
     }
 
-    return visited;
+    <span class="code-keyword">return</span> <span class="code-variable">visited</span>;
 }</code></pre>
                         </div>
                     </div>
@@ -285,23 +342,23 @@ function dfs(graph, startVertex, callback) {
                         <div class="code-column">
                             <h5>Pseudocódigo</h5>
                             <pre class="pseudo-code"><code>
-função BFS(grafo, verticeInicial):
-    visitados = novo Conjunto()
+<span class="code-keyword">função</span> <span class="code-function">BFS</span>(<span class="code-variable">grafo</span>, <span class="code-variable">verticeInicial</span>):
+    <span class="code-variable">visitados</span> = <span class="code-keyword">novo</span> Conjunto()
     
-    fila = nova Fila()
-    fila.enfileira(verticeInicial)
-    adiciona verticeInicial ao conjunto visitados
+    <span class="code-variable">fila</span> = <span class="code-keyword">novo</span> Fila()
+    <span class="code-function">adiciona_a_fila</span>(<span class="code-variable">verticeInicial</span>)
+    <span class="code-function">adiciona</span> <span class="code-variable">verticeInicial</span> ao conjunto <span class="code-variable">visitados</span>
     
-    enquanto fila não estiver vazia:
-        vertice = fila.desenfileira()
-        processaVertice(vertice)
+    <span class="code-keyword">enquanto</span> <span class="code-variable">fila</span> não estiver vazia:
+        <span class="code-variable">vertice</span> = <span class="code-variable">fila</span>.<span class="code-function">desenfileira</span>()
+        <span class="code-function">processaVertice</span>(<span class="code-variable">vertice</span>)
         
-        para cada vizinho de vertice no grafo:
-            se vizinho não estiver em visitados:
-                adiciona vizinho ao conjunto visitados
-                fila.enfileira(vizinho)
+        <span class="code-keyword">para</span> cada <span class="code-variable">vizinho</span> de <span class="code-variable">vertice</span> no <span class="code-variable">grafo</span>:
+            <span class="code-keyword">se</span> <span class="code-variable">vizinho</span> não estiver em <span class="code-variable">visitados</span>:
+                <span class="code-function">adiciona</span> <span class="code-variable">vizinho</span> ao conjunto <span class="code-variable">visitados</span>
+                <span class="code-variable">fila</span>.<span class="code-function">enfileira</span>(<span class="code-variable">vizinho</span>)
     
-    retorna visitados</code></pre>
+    <span class="code-keyword">retorna</span> <span class="code-variable">visitados</span></code></pre>
                         </div>
                         <div class="code-column">
                             <h5>Implementação JavaScript</h5>
@@ -345,29 +402,29 @@ function bfs(graph, startVertex, callback) {
                         <div class="code-column">
                             <h5>Pseudocódigo</h5>
                             <pre class="pseudo-code"><code>
-função verificaConectividade(grafo):
-    se grafo não tiver vértices:
-        retorna verdadeiro
+<span class="code-keyword">função</span> <span class="code-function">verificaConectividade</span>(<span class="code-variable">grafo</span>):
+    <span class="code-keyword">se</span> <span class="code-variable">grafo</span> não tiver vértices:
+        <span class="code-keyword">retorna</span> verdadeiro
         
-    verticeInicial = qualquer vértice do grafo
+    <span class="code-variable">verticeInicial</span> = qualquer vértice do <span class="code-variable">grafo</span>
     
-    visitados = DFS(grafo, verticeInicial)
+    <span class="code-variable">visitados</span> = <span class="code-function">DFS</span>(<span class="code-variable">grafo</span>, <span class="code-variable">verticeInicial</span>)
     
-    se tamanho(visitados) == número de vértices no grafo:
-        retorna verdadeiro
-    senão:
-        retorna falso</code></pre>
+    <span class="code-keyword">se</span> <span class="code-function">tamanho</span>(<span class="code-variable">visitados</span>) == número de vértices no <span class="code-variable">grafo</span>:
+        <span class="code-keyword">retorna</span> verdadeiro
+    <span class="code-keyword">senão</span>:
+        <span class="code-keyword">retorna</span> falso</code></pre>
                         </div>
                         <div class="code-column">
                             <h5>Implementação JavaScript</h5>
                             <pre class="real-code"><code>
-function checkConnectivity(graph) {
-    const vertices = Array.from(graph.vertices);
-    if (vertices.length === 0) 
-        return true;
+<span class="code-keyword">function</span> <span class="code-function">checkConnectivity</span>(<span class="code-variable">graph</span>) {
+    <span class="code-keyword">const</span> <span class="code-variable">vertices</span> = <span class="code-function">Array</span>.<span class="code-function">from</span>(<span class="code-variable">graph</span>.<span class="code-variable">vertices</span>);
+    <span class="code-keyword">if</span> (<span class="code-variable">vertices</span>.<span class="code-variable">length</span> === 0) 
+        <span class="code-keyword">return</span> true;
 
-    const visited = dfs(graph, vertices[0]);
-    return visited.size === graph.vertices.size;
+    <span class="code-keyword">const</span> <span class="code-variable">visited</span> = <span class="code-function">algorithm</span>(<span class="code-variable">graph</span>, <span class="code-variable">vertices</span>[0]);
+    <span class="code-keyword">return</span> <span class="code-variable">visited</span>.<span class="code-variable">size</span> === <span class="code-variable">graph</span>.<span class="code-variable">vertices</span>.<span class="code-variable">size</span>;
 }</code></pre>
                         </div>
                     </div>
@@ -383,52 +440,7 @@ function checkConnectivity(graph) {
                     </div>
                 </div>
 
-                <!-- Slide 7: Diferenças DFS vs BFS -->
-                <div class="carousel-item">
-                    <h2>DFS vs BFS: Comparação</h2>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card h-100">
-                                <div class="card-header bg-primary text-white">
-                                    DFS (Busca em Profundidade)
-                                </div>
-                                <div class="card-body">
-                                    <ul class="text-start">
-                                        <li>
-                                            Usa <strong>pilha</strong> (LIFO)
-                                        </li>
-                                        <li>Explora profundidade primeiro</li>
-                                        <li>
-                                            Bom para encontrar caminhos
-                                            distantes
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card h-100">
-                                <div class="card-header bg-success text-white">
-                                    BFS (Busca em Largura)
-                                </div>
-                                <div class="card-body">
-                                    <ul class="text-start">
-                                        <li>
-                                            Usa <strong>fila</strong> (FIFO)
-                                        </li>
-                                        <li>Explora largura primeiro</li>
-                                        <li>
-                                            Bom para encontrar caminhos mais
-                                            curtos
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 8: Conclusão -->
+                <!-- Slide 7: Conclusão -->
                 <div class="carousel-item">
                     <h2>Conclusão</h2>
                     <p class="lead">
