@@ -246,16 +246,16 @@
     <span class="code-function">adicionar_na_pilha</span>(<span class="code-variable">verticeInicial</span>)
     
     <span class="code-keyword">enquanto</span> <span class="code-variable">pilha</span> não estiver vazia:
-        <span class="code-variable">vertice</span> = <span class="code-function">estourar_topo_da_pilha</span>()
+        <span class="code-variable">vertice</span> = <span class="code-function">desempilha</span>()
         
         <span class="code-keyword">se</span> <span class="code-variable">vertice</span> não estiver em <span class="code-variable">visitados</span>:
             <span class="code-function">adiciona</span> <span class="code-variable">vertice</span> ao conjunto <span class="code-variable">visitados</span>
-            <span class="code-function">processaVertice</span>(<span class="code-variable">vertice</span>)
+            
             
             <span class="code-keyword">para</span> cada <span class="code-variable">vizinho</span> de <span class="code-variable">vertice</span> no <span class="code-variable">grafo</span>:
                 <span class="code-keyword">se</span> <span class="code-variable">vizinho</span> não estiver em <span class="code-variable">visitados</span> E
                    <span class="code-variable">vizinho</span> não estiver na <span class="code-variable">pilha</span>:
-                    <span class="code-function">adiciona_a_pilha</span>(<span class="code-variable">vizinho</span>)
+                    <span class="code-function">adiciona_na_pilha</span>(<span class="code-variable">vizinho</span>)
     
     <span class="code-keyword">retorna</span> <span class="code-variable">visitados</span></code></pre>
                         </div>
@@ -363,28 +363,28 @@
                         <div class="code-column">
                             <h5>Implementação JavaScript</h5>
                             <pre class="real-code"><code>
-function bfs(graph, startVertex, callback) {
-    if (!graph.vertices.has(startVertex)) 
-        return new Set();
+<span class="code-keyword">function</span> <span class="code-function">bfs</span>(<span class="code-variable">graph</span>, <span class="code-variable">startVertex</span>, <span class="code-variable">callback</span>) {
+    <span class="code-keyword">if</span> (!<span class="code-variable">graph</span>.<span class="code-function">vertices</span>.<span class="code-function">has</span>(<span class="code-variable">startVertex</span>)) 
+        <span class="code-keyword">return</span> <span class="code-keyword">new</span> <span class="code-function">Set</span>();
 
-    const visited = new Set();
-    const queue = [startVertex];
-    visited.add(startVertex);
+    <span class="code-keyword">const</span> <span class="code-variable">visited</span> = <span class="code-keyword">new</span> <span class="code-function">Set</span>();
+    <span class="code-keyword">const</span> <span class="code-variable">queue</span> = [<span class="code-variable">startVertex</span>];
+    <span class="code-variable">visited</span>.<span class="code-function">add</span>(<span class="code-variable">startVertex</span>);
 
-    while (queue.length > 0) {
-        const vertex = queue.shift();
-        callback && callback(vertex);
+    <span class="code-keyword">while</span> (<span class="code-variable">queue</span>.<span class="code-variable">length</span> > 0) {
+        <span class="code-keyword">const</span> <span class="code-variable">vertex</span> = <span class="code-variable">queue</span>.<span class="code-function">shift</span>();
+        <span class="code-variable">callback</span> && <span class="code-variable">callback</span>(<span class="code-variable">vertex</span>);
 
-        const neighbors = graph.getNeighbors(vertex);
-        for (const neighbor of neighbors) {
-            if (!visited.has(neighbor)) {
-                visited.add(neighbor);
-                queue.push(neighbor);
+        <span class="code-keyword">const</span> <span class="code-variable">neighbors</span> = <span class="code-variable">graph</span>.<span class="code-function">getNeighbors</span>(<span class="code-variable">vertex</span>);
+        <span class="code-keyword">for</span> (<span class="code-keyword">const</span> <span class="code-variable">neighbor</span> <span class="code-keyword">of</span> <span class="code-variable">neighbors</span>) {
+            <span class="code-keyword">if</span> (!<span class="code-variable">visited</span>.<span class="code-function">has</span>(<span class="code-variable">neighbor</span>)) {
+                <span class="code-variable">visited</span>.<span class="code-function">add</span>(<span class="code-variable">neighbor</span>);
+                <span class="code-variable">queue</span>.<span class="code-function">push</span>(<span class="code-variable">neighbor</span>);
             }
         }
     }
 
-    return visited;
+    <span class="code-keyword">return</span> <span class="code-variable">visited</span>;
 }</code></pre>
                         </div>
                     </div>
@@ -418,7 +418,7 @@ function bfs(graph, startVertex, callback) {
                         <div class="code-column">
                             <h5>Implementação JavaScript</h5>
                             <pre class="real-code"><code>
-<span class="code-keyword">function</span> <span class="code-function">checkConnectivity</span>(<span class="code-variable">graph</span>) {
+<span class="code-keyword">function</span> <span class="code-function">checkConnectivity</span>(<span class="code-variable">graph, algorithm</span>) {
     <span class="code-keyword">const</span> <span class="code-variable">vertices</span> = <span class="code-function">Array</span>.<span class="code-function">from</span>(<span class="code-variable">graph</span>.<span class="code-variable">vertices</span>);
     <span class="code-keyword">if</span> (<span class="code-variable">vertices</span>.<span class="code-variable">length</span> === 0) 
         <span class="code-keyword">return</span> true;

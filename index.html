@@ -155,7 +155,7 @@ B - D 6`;
                         }
 
                         currentGraph = buildGraph(input);
-
+                        console.log(currentGraph);
                         if (currentGraph) {
                             renderGraph(currentGraph);
                             enableAlgorithmButtons();
@@ -253,7 +253,10 @@ B - D 6`;
                 });
 
                 resetBtn.addEventListener("click", function () {
-                    resetVisualization();
+                    // Reset visualization state
+                    currentStepIndex = -1;
+                    setStatus("");
+                    // Reset the graph visualization to its original state
                     renderGraph(currentGraph);
                 });
 
@@ -415,34 +418,67 @@ B - D 6`;
                 function buildGraph(text) {
                     const lines = text.split("\n");
                     let isDirected = null;
+                    let hasValidEdge = false;
 
+                    // First pass: determine graph type and check for valid edges
                     for (const line of lines) {
                         const trimmedLine = line.trim();
                         if (trimmedLine === "" || trimmedLine.startsWith("#"))
                             continue;
 
+                        // Check for valid directed edge format (A->B)
                         if (trimmedLine.includes("->")) {
+                            const parts = trimmedLine.split("->");
+                            if (
+                                parts.length !== 2 ||
+                                !parts[0].trim() ||
+                                !parts[1].trim()
+                            ) {
+                                throw new Error(
+                                    "Formato inválido para aresta direcionada. Use: 'A->B' ou 'A->B 5'"
+                                );
+                            }
                             if (isDirected === false) {
                                 throw new Error(
-                                    "Mixed graph types: Cannot have both directed and undirected edges"
+                                    "Grafos mistos: Não é possível ter arestas direcionadas e não direcionadas"
                                 );
                             }
                             isDirected = true;
-                        } else if (trimmedLine.includes(" - ")) {
+                            hasValidEdge = true;
+                        }
+                        // Check for valid undirected edge format (A - B)
+                        else if (trimmedLine.includes(" - ")) {
+                            const parts = trimmedLine.split(" - ");
+                            if (
+                                parts.length !== 2 ||
+                                !parts[0].trim() ||
+                                !parts[1].trim()
+                            ) {
+                                throw new Error(
+                                    "Formato inválido para aresta não direcionada. Use: 'A - B' ou 'A - B 5'"
+                                );
+                            }
                             if (isDirected === true) {
                                 throw new Error(
-                                    "Mixed graph types: Cannot have both directed and undirected edges"
+                                    "Grafos mistos: Não é possível ter arestas direcionadas e não direcionadas"
                                 );
                             }
                             isDirected = false;
+                            hasValidEdge = true;
                         }
                     }
 
-                    if (isDirected === null) return new Graph();
+                    // Check if there are any valid edges
+                    if (!hasValidEdge) {
+                        throw new Error(
+                            "O grafo deve ter pelo menos uma aresta válida"
+                        );
+                    }
 
                     const graph = new Graph(isDirected);
                     const processedEdges = new Set();
 
+                    // Second pass: build the graph
                     for (const line of lines) {
                         const trimmedLine = line.trim();
                         if (trimmedLine === "" || trimmedLine.startsWith("#"))
@@ -483,6 +519,17 @@ B - D 6`;
                         graph.addEdge(source.trim(), destination, weight);
                     }
 
+                    // Final validation: check if graph has vertices and edges
+                    if (graph.vertices.size === 0) {
+                        throw new Error("O grafo não pode estar vazio");
+                    }
+
+                    if (graph.edges.length === 0) {
+                        throw new Error(
+                            "O grafo deve ter pelo menos uma aresta"
+                        );
+                    }
+
                     return graph;
                 }
 
@@ -491,7 +538,8 @@ B - D 6`;
                     graph,
                     highlightedVertex = null,
                     highlightedEdges = [],
-                    visitedVertices = []
+                    visitedVertices = [],
+                    seenVertices = new Set()
                 ) {
                     const isDirected = graph.isDirected;
                     let dotContent = `${
@@ -503,16 +551,22 @@ B - D 6`;
                         isDirected ? "arrowhead=vee, arrowsize=0.8" : ""
                     }];\n`;
 
-                    // Add vertices with potential highlighting
+                    // Add vertices with state-based highlighting
                     for (const vertex of graph.vertices) {
                         let nodeAttributes = "";
 
                         if (vertex === highlightedVertex) {
+                            // Currently processing vertex (red)
                             nodeAttributes =
                                 ' [fillcolor="#ff6347", color="red", penwidth=3]';
                         } else if (visitedVertices.includes(vertex)) {
+                            // Visited vertices (grey)
                             nodeAttributes =
-                                ' [fillcolor="#32cd32", color="#006400"]';
+                                ' [fillcolor="#a9a9a9", color="#696969"]';
+                        } else if (seenVertices.has(vertex)) {
+                            // Seen but not visited vertices (green)
+                            nodeAttributes =
+                                ' [fillcolor="#90EE90", color="#006400"]';
                         }
 
                         dotContent += `  "${vertex}"${nodeAttributes};\n`;
@@ -577,13 +631,15 @@ B - D 6`;
                     graph,
                     highlightedVertex = null,
                     highlightedEdges = [],
-                    visitedVertices = []
+                    visitedVertices = [],
+                    seenVertices = new Set()
                 ) {
                     const dotGraph = generateDotGraph(
                         graph,
                         highlightedVertex,
                         highlightedEdges,
-                        visitedVertices
+                        visitedVertices,
+                        seenVertices
                     );
 
                     vizInstance
@@ -632,45 +688,46 @@ B - D 6`;
                 function prepareDfsSteps(graph, startVertex) {
                     algorithmSteps = [];
                     visitedVertices = new Set();
+                    seenVertices = new Set([startVertex]); // Track seen vertices
                     const stack = [startVertex];
 
-                    // Initial step - just show the start vertex
+                    // Initial step - show start vertex as seen
                     algorithmSteps.push({
                         type: "initialize",
                         vertex: startVertex,
                         stack: [...stack],
                         visited: new Set(),
+                        seen: new Set(seenVertices),
                         highlightedEdges: [],
                     });
 
-                    // Simulate DFS algorithm execution and record steps
                     while (stack.length > 0) {
                         const vertex = stack.pop();
 
                         if (!visitedVertices.has(vertex)) {
-                            // Vertex processing step
+                            // Vertex processing step - turn it grey
                             visitedVertices.add(vertex);
                             algorithmSteps.push({
                                 type: "visit",
                                 vertex: vertex,
                                 stack: [...stack],
                                 visited: new Set(visitedVertices),
+                                seen: new Set(seenVertices),
                                 highlightedEdges: [],
                             });
 
-                            // Get and process neighbors
                             const neighbors = graph.getNeighbors(vertex);
                             const highlightedEdges = [];
 
                             // Add neighbors to stack in reverse order for correct DFS
                             for (let i = neighbors.length - 1; i >= 0; i--) {
                                 const neighbor = neighbors[i];
-
                                 if (
                                     !visitedVertices.has(neighbor) &&
-                                    !stack.includes(neighbor)
+                                    !seenVertices.has(neighbor)
                                 ) {
                                     stack.push(neighbor);
+                                    seenVertices.add(neighbor); // Mark as seen when added to stack
                                     highlightedEdges.push({
                                         source: vertex,
                                         destination: neighbor,
@@ -678,13 +735,14 @@ B - D 6`;
                                 }
                             }
 
-                            // Only add the exploring step if there are neighbors to explore
+                            // Only add the exploring step if there are new neighbors to explore
                             if (highlightedEdges.length > 0) {
                                 algorithmSteps.push({
                                     type: "explore",
                                     vertex: vertex,
                                     stack: [...stack],
                                     visited: new Set(visitedVertices),
+                                    seen: new Set(seenVertices),
                                     highlightedEdges: highlightedEdges,
                                 });
                             }
@@ -719,39 +777,43 @@ B - D 6`;
                 function prepareBfsSteps(graph, startVertex) {
                     algorithmSteps = [];
                     visitedVertices = new Set();
+                    seenVertices = new Set([startVertex]); // Track seen vertices
                     const queue = [startVertex];
                     visitedVertices.add(startVertex);
 
-                    // Initial step - just show the start vertex
+                    // Initial step - show start vertex as seen
                     algorithmSteps.push({
                         type: "initialize",
                         vertex: startVertex,
                         queue: [...queue],
                         visited: new Set(visitedVertices),
+                        seen: new Set(seenVertices),
                         highlightedEdges: [],
                     });
 
-                    // Simulate BFS algorithm execution and record steps
                     while (queue.length > 0) {
                         const vertex = queue.shift();
 
-                        // Vertex processing step
+                        // Vertex processing step - turn it grey
                         algorithmSteps.push({
                             type: "visit",
                             vertex: vertex,
                             queue: [...queue],
                             visited: new Set(visitedVertices),
+                            seen: new Set(seenVertices),
                             highlightedEdges: [],
                         });
 
-                        // Get and process neighbors
                         const neighbors = graph.getNeighbors(vertex);
                         const highlightedEdges = [];
 
                         // Process each neighbor
                         for (const neighbor of neighbors) {
-                            if (!visitedVertices.has(neighbor)) {
-                                visitedVertices.add(neighbor);
+                            if (
+                                !visitedVertices.has(neighbor) &&
+                                !seenVertices.has(neighbor)
+                            ) {
+                                seenVertices.add(neighbor); // Mark as seen when discovered
                                 queue.push(neighbor);
                                 highlightedEdges.push({
                                     source: vertex,
@@ -760,16 +822,20 @@ B - D 6`;
                             }
                         }
 
-                        // Only add the exploring step if there are neighbors to explore
+                        // Only add the exploring step if there are new neighbors to explore
                         if (highlightedEdges.length > 0) {
                             algorithmSteps.push({
                                 type: "explore",
                                 vertex: vertex,
                                 queue: [...queue],
                                 visited: new Set(visitedVertices),
+                                seen: new Set(seenVertices),
                                 highlightedEdges: highlightedEdges,
                             });
                         }
+
+                        // After exploring, mark current vertex as visited
+                        visitedVertices.add(vertex);
                     }
                 }
 
@@ -822,7 +888,8 @@ B - D 6`;
                         currentGraph,
                         step.vertex,
                         step.highlightedEdges,
-                        visitedArray
+                        visitedArray,
+                        step.seen
                     );
                 }
 
