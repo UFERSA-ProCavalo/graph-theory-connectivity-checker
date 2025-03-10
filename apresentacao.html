@@ -262,7 +262,7 @@
                         <div class="code-column">
                             <h5>Implementação JavaScript</h5>
                             <pre class="real-code"><code>
-<span class="code-keyword">function</span> <span class="code-function">dfs</span>(<span class="code-variable">graph</span>, <span class="code-variable">startVertex</span>, <span class="code-variable">callback</span>) {
+<span class="code-keyword">function</span> <span class="code-function">dfs</span>(<span class="code-variable">graph</span>, <span class="code-variable">startVertex</span>) {
     <span class="code-keyword">if</span> (!<span class="code-variable">graph</span>.<span class="code-function">vertices</span>.<span class="code-function">has</span>(<span class="code-variable">startVertex</span>)) 
         <span class="code-keyword">return</span> <span class="code-keyword">new</span> <span class="code-function">Set</span>();
 
@@ -274,7 +274,6 @@
 
         <span class="code-keyword">if</span> (!<span class="code-variable">visited</span>.<span class="code-function">has</span>(<span class="code-variable">vertex</span>)) {
             <span class="code-variable">visited</span>.<span class="code-function">add</span>(<span class="code-variable">vertex</span>);
-            <span class="code-variable">callback</span> && <span class="code-variable">callback</span>(<span class="code-variable">vertex</span>);
 
             <span class="code-keyword">const</span> <span class="code-variable">neighbors</span> = <span class="code-variable">graph</span>.<span class="code-function">getNeighbors</span>(<span class="code-variable">vertex</span>);
             <span class="code-keyword">for</span> (<span class="code-keyword">let</span> <span class="code-variable">i</span> = <span class="code-variable">neighbors</span>.<span class="code-variable">length</span> - 1; <span class="code-variable">i</span> >= 0; <span class="code-variable">i</span>--) {
@@ -351,7 +350,6 @@
     
     <span class="code-keyword">enquanto</span> <span class="code-variable">fila</span> não estiver vazia:
         <span class="code-variable">vertice</span> = <span class="code-variable">fila</span>.<span class="code-function">desenfileira</span>()
-        <span class="code-function">processaVertice</span>(<span class="code-variable">vertice</span>)
         
         <span class="code-keyword">para</span> cada <span class="code-variable">vizinho</span> de <span class="code-variable">vertice</span> no <span class="code-variable">grafo</span>:
             <span class="code-keyword">se</span> <span class="code-variable">vizinho</span> não estiver em <span class="code-variable">visitados</span>:
@@ -363,7 +361,7 @@
                         <div class="code-column">
                             <h5>Implementação JavaScript</h5>
                             <pre class="real-code"><code>
-<span class="code-keyword">function</span> <span class="code-function">bfs</span>(<span class="code-variable">graph</span>, <span class="code-variable">startVertex</span>, <span class="code-variable">callback</span>) {
+<span class="code-keyword">function</span> <span class="code-function">bfs</span>(<span class="code-variable">graph</span>, <span class="code-variable">startVertex</span>) {
     <span class="code-keyword">if</span> (!<span class="code-variable">graph</span>.<span class="code-function">vertices</span>.<span class="code-function">has</span>(<span class="code-variable">startVertex</span>)) 
         <span class="code-keyword">return</span> <span class="code-keyword">new</span> <span class="code-function">Set</span>();
 
@@ -373,7 +371,6 @@
 
     <span class="code-keyword">while</span> (<span class="code-variable">queue</span>.<span class="code-variable">length</span> > 0) {
         <span class="code-keyword">const</span> <span class="code-variable">vertex</span> = <span class="code-variable">queue</span>.<span class="code-function">shift</span>();
-        <span class="code-variable">callback</span> && <span class="code-variable">callback</span>(<span class="code-variable">vertex</span>);
 
         <span class="code-keyword">const</span> <span class="code-variable">neighbors</span> = <span class="code-variable">graph</span>.<span class="code-function">getNeighbors</span>(<span class="code-variable">vertex</span>);
         <span class="code-keyword">for</span> (<span class="code-keyword">const</span> <span class="code-variable">neighbor</span> <span class="code-keyword">of</span> <span class="code-variable">neighbors</span>) {
