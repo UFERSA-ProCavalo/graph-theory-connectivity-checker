@@ -42,7 +42,6 @@ button.selected {
 }
 button.algorithm-btn {
     background-color: #cccccc;
-    color: black;
 }
 button.algorithm-btn.selected {
     background-color: #4caf50;
@@ -110,6 +109,11 @@ button.algorithm-btn.selected {
 }
 
 .step-controls button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.step-controls button:disabled:hover {
     background-color: #cccccc;
     cursor: not-allowed;
 }

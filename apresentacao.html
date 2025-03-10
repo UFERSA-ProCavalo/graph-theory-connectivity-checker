@@ -119,12 +119,6 @@
                             </ul>
                         </div>
                     </div>
-                    <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/1/1d/Directed_graph.svg"
-                        alt="Grafo Exemplo"
-                        class="img-fluid mt-3"
-                        style="max-height: 200px"
-                    />
                 </div>
 
                 <!-- Slide 2: Algoritmo DFS - Explicação -->
@@ -160,17 +154,10 @@
                         </div>
                     </div>
 
-                    <div class="alert alert-info">
-                        <strong>Importante:</strong> A implementação atual
-                        também verifica se os vizinhos já estão na pilha para
-                        evitar duplicações.
-                    </div>
-
                     <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/1/1f/Depth-first-tree.svg"
+                        src="images/bfs-ezgif.com-crop-2.webp"
                         alt="Árvore DFS"
                         class="img-fluid mt-3"
-                        style="max-height: 180px"
                     />
                 </div>
 
@@ -180,7 +167,7 @@
                     <div class="code-container">
                         <div class="code-column">
                             <h5>Pseudocódigo</h5>
-                            <pre class="pseudo-code">
+                            <pre class="pseudo-code"><code>
 função DFS(grafo, verticeInicial):
     visitados = novo Conjunto()
     
@@ -199,12 +186,11 @@ função DFS(grafo, verticeInicial):
                    vizinho não estiver na pilha:
                     pilha.push(vizinho)
     
-    retorna visitados</pre
-                            >
+    retorna visitados</code></pre>
                         </div>
                         <div class="code-column">
                             <h5>Implementação JavaScript</h5>
-                            <pre class="real-code">
+                            <pre class="real-code"><code>
 function dfs(graph, startVertex, callback) {
     if (!graph.vertices.has(startVertex)) 
         return new Set();
@@ -231,8 +217,7 @@ function dfs(graph, startVertex, callback) {
     }
 
     return visited;
-}</pre
-                            >
+}</code></pre>
                         </div>
                     </div>
                 </div>
@@ -273,10 +258,9 @@ function dfs(graph, startVertex, callback) {
                     </div>
 
                     <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/4/46/Animated_BFS.gif"
+                        src="images/bfs-ezgif.com-crop-1.webp"
                         alt="Animação BFS"
                         class="img-fluid mt-3"
-                        style="max-height: 180px"
                     />
                 </div>
 
@@ -286,7 +270,7 @@ function dfs(graph, startVertex, callback) {
                     <div class="code-container">
                         <div class="code-column">
                             <h5>Pseudocódigo</h5>
-                            <pre class="pseudo-code">
+                            <pre class="pseudo-code"><code>
 função BFS(grafo, verticeInicial):
     visitados = novo Conjunto()
     
@@ -303,12 +287,11 @@ função BFS(grafo, verticeInicial):
                 adiciona vizinho ao conjunto visitados
                 fila.enfileira(vizinho)
     
-    retorna visitados</pre
-                            >
+    retorna visitados</code></pre>
                         </div>
                         <div class="code-column">
                             <h5>Implementação JavaScript</h5>
-                            <pre class="real-code">
+                            <pre class="real-code"><code>
 function bfs(graph, startVertex, callback) {
     if (!graph.vertices.has(startVertex)) 
         return new Set();
@@ -331,8 +314,7 @@ function bfs(graph, startVertex, callback) {
     }
 
     return visited;
-}</pre
-                            >
+}</code></pre>
                         </div>
                     </div>
                 </div>
@@ -348,7 +330,7 @@ function bfs(graph, startVertex, callback) {
                     <div class="code-container">
                         <div class="code-column">
                             <h5>Pseudocódigo</h5>
-                            <pre class="pseudo-code">
+                            <pre class="pseudo-code"><code>
 função verificaConectividade(grafo):
     se grafo não tiver vértices:
         retorna verdadeiro
@@ -360,12 +342,11 @@ função verificaConectividade(grafo):
     se tamanho(visitados) == número de vértices no grafo:
         retorna verdadeiro
     senão:
-        retorna falso</pre
-                            >
+        retorna falso</code></pre>
                         </div>
                         <div class="code-column">
                             <h5>Implementação JavaScript</h5>
-                            <pre class="real-code">
+                            <pre class="real-code"><code>
 function checkConnectivity(graph) {
     const vertices = Array.from(graph.vertices);
     if (vertices.length === 0) 
@@ -373,8 +354,7 @@ function checkConnectivity(graph) {
 
     const visited = dfs(graph, vertices[0]);
     return visited.size === graph.vertices.size;
-}</pre
-                            >
+}</code></pre>
                         </div>
                     </div>
 
@@ -461,10 +441,9 @@ function checkConnectivity(graph) {
                         </div>
                     </div>
                     <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Graph_traversal.svg"
+                        src="images/bfs.gif"
                         alt="Comparação DFS e BFS"
                         class="img-fluid mt-3"
-                        style="max-height: 200px"
                     />
                 </div>
             </div>
