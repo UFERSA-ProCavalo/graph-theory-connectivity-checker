@@ -1,0 +1,113 @@
+=================================================================
+ALGORITMOS DE BUSCA EM GRAFOS - PSEUDOCÓDIGO
+=================================================================
+
+-----------------------------------------------
+1. BUSCA EM PROFUNDIDADE (DFS - Depth-First Search)
+-----------------------------------------------
+
+/**
+ * Algoritmo de Busca em Profundidade (DFS)
+ * 
+ * DFS explora o grafo seguindo um caminho até sua profundidade máxima
+ * antes de retroceder e explorar outros caminhos.
+ *
+ * @param grafo - Grafo a ser percorrido
+ * @param verticeInicial - Vértice onde a busca começa
+ */
+
+função DFS(grafo, verticeInicial):
+    // Conjunto para rastrear vértices visitados
+    visitados = novo Conjunto()
+    
+    // Pilha para controlar a ordem de exploração
+    pilha = nova Pilha()
+    pilha.push(verticeInicial)
+    
+    enquanto pilha não estiver vazia:
+        // Remove o vértice do topo da pilha
+        vertice = pilha.pop()
+        
+        se vertice não estiver em visitados:
+            // Marca como visitado
+            adiciona vertice ao conjunto visitados
+            
+            // Processa o vértice (ex: imprimir, contabilizar, etc.)
+            processaVertice(vertice)
+            
+            // Adiciona vizinhos não visitados à pilha
+            para cada vizinho de vertice no grafo:
+                // Não adiciona se já foi visitado ou já está na pilha
+                se vizinho não estiver em visitados E vizinho não estiver na pilha:
+                    pilha.push(vizinho)
+    
+    retorna visitados
+    
+-----------------------------------------------
+2. BUSCA EM LARGURA (BFS - Breadth-First Search)
+-----------------------------------------------
+
+/**
+ * Algoritmo de Busca em Largura (BFS)
+ * 
+ * BFS explora o grafo visitando todos os vértices adjacentes ao vértice atual
+ * antes de avançar para o próximo nível.
+ *
+ * @param grafo - Grafo a ser percorrido
+ * @param verticeInicial - Vértice onde a busca começa
+ */
+
+função BFS(grafo, verticeInicial):
+    // Conjunto para rastrear vértices visitados
+    visitados = novo Conjunto()
+    
+    // Fila para controlar a ordem de exploração por níveis
+    fila = nova Fila()
+    
+    // Adiciona o vértice inicial à fila e marca como visitado
+    fila.enfileira(verticeInicial)
+    adiciona verticeInicial ao conjunto visitados
+    
+    enquanto fila não estiver vazia:
+        // Remove o primeiro vértice da fila
+        vertice = fila.desenfileira()
+        
+        // Processa o vértice (ex: imprimir, contabilizar, etc.)
+        processaVertice(vertice)
+        
+        // Adiciona vizinhos não visitados à fila
+        para cada vizinho de vertice no grafo:
+            se vizinho não estiver em visitados:
+                adiciona vizinho ao conjunto visitados
+                fila.enfileira(vizinho)
+    
+    retorna visitados
+    
+-----------------------------------------------
+3. VERIFICAÇÃO DE CONECTIVIDADE
+-----------------------------------------------
+
+/**
+ * Algoritmo para verificar se um grafo é conexo
+ * 
+ * Um grafo é conexo se existe um caminho entre cada par de vértices.
+ *
+ * @param grafo - Grafo a ser verificado
+ * @returns - Verdadeiro se o grafo for conexo, falso caso contrário
+ */
+
+função verificaConectividade(grafo):
+    se grafo não tiver vértices:
+        retorna verdadeiro
+        
+    // Seleciona um vértice arbitrário
+    verticeInicial = qualquer vértice do grafo
+    
+    // Executa DFS a partir do vértice inicial
+    visitados = DFS(grafo, verticeInicial)
+    
+    // O grafo é conexo se todos os vértices foram visitados
+    se tamanho(visitados) == número de vértices no grafo:
+        retorna verdadeiro
+    senão:
+        retorna falso

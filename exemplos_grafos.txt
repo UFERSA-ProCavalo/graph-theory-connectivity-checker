@@ -1,0 +1,22 @@
+# Exemplo 1: Grafo em Árvore
+# Este grafo ilustra claramente a diferença entre DFS e BFS
+A - B
+A - C
+B - D
+B - E
+C - F
+C - G
+
+# Exemplo 2: Grafo com Múltiplos Caminhos
+# Este grafo tem vários caminhos entre os vértices
+A - B
+B - C
+A - D
+B - E
+C - F
+D - E
+E - F
+D - G
+G - H
+H - I
+F - I

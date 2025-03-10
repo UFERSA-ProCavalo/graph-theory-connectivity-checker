@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Apresentação de Algoritmos de Grafos</title>
+        <!-- Bootstrap CSS -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                font-size: medium;
+            }
+            .carousel {
+                background-color: #f8f9fa;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                margin: 40px auto;
+                max-width: 1000px;
+            }
+            .carousel-inner {
+                min-height: 600px;
+            }
+            .carousel-item {
+                padding: 40px 60px;
+                text-align: center;
+            }
+            h1,
+            h2,
+            h3 {
+                color: #333;
+            }
+            pre {
+                background-color: #f5f5f5;
+                border-left: 4px solid #4caf50;
+                padding: 15px;
+                border-radius: 4px;
+                text-align: left;
+                margin: 20px 0;
+                white-space: pre-wrap;
+            }
+            .code-container {
+                display: flex;
+                flex-direction: row;
+                gap: 20px;
+                text-align: left;
+            }
+            .code-column {
+                flex: 1;
+                padding: 10px;
+            }
+            .pseudo-code {
+                background-color: #f8f9fa;
+                border-left: 4px solid #007bff;
+            }
+            .real-code {
+                background-color: #f8f9fa;
+                border-left: 4px solid #dc3545;
+            }
+            .card {
+                margin-bottom: 20px;
+                border: none;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+            .card-header {
+                background-color: #4caf50;
+                color: white;
+                font-weight: bold;
+            }
+            .controls {
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: rgba(255, 255, 255, 0.9);
+                padding: 10px;
+                border-radius: 30px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+                z-index: 100;
+            }
+            .controls button {
+                margin: 0 5px;
+            }
+            .highlight {
+                background-color: #ffeb3b;
+                color: #333;
+            }
+        </style>
+    </head>
+    <body>
+        <div
+            id="presentationCarousel"
+            class="carousel slide"
+            data-bs-ride="false"
+            data-bs-interval="false"
+        >
+            <div class="carousel-inner">
+                <!-- Slide 1: Introdução -->
+                <div class="carousel-item active">
+                    <h1>Algoritmos de Busca em Grafos</h1>
+                    <p class="lead">
+                        Uma comparação entre implementação e pseudocódigo
+                    </p>
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h3>Conteúdo da Apresentação</h3>
+                            <ul class="text-start">
+                                <li>Algoritmo DFS (Busca em Profundidade)</li>
+                                <li>Algoritmo BFS (Busca em Largura)</li>
+                                <li>Verificação de Conectividade em Grafos</li>
+                                <li>
+                                    Comparação entre Pseudocódigo e
+                                    Implementação Real
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/1/1d/Directed_graph.svg"
+                        alt="Grafo Exemplo"
+                        class="img-fluid mt-3"
+                        style="max-height: 200px"
+                    />
+                </div>
+
+                <!-- Slide 2: Algoritmo DFS - Explicação -->
+                <div class="carousel-item">
+                    <h2>Busca em Profundidade (DFS)</h2>
+                    <p class="lead">
+                        Explora o grafo seguindo um caminho até sua profundidade
+                        máxima antes de retroceder.
+                    </p>
+
+                    <div class="card mb-3">
+                        <div class="card-header">Funcionamento do DFS</div>
+                        <div class="card-body text-start">
+                            <ol>
+                                <li>Inicia a partir de um vértice inicial.</li>
+                                <li>
+                                    Usa uma <strong>pilha</strong> para
+                                    controlar a ordem de exploração.
+                                </li>
+                                <li>
+                                    Para cada vértice, visita primeiro um
+                                    vizinho antes de voltar para os demais.
+                                </li>
+                                <li>
+                                    Marca os vértices como visitados para evitar
+                                    ciclos.
+                                </li>
+                                <li>
+                                    Continua até que todos os vértices
+                                    acessíveis tenham sido visitados.
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <strong>Importante:</strong> A implementação atual
+                        também verifica se os vizinhos já estão na pilha para
+                        evitar duplicações.
+                    </div>
+
+                    <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/1/1f/Depth-first-tree.svg"
+                        alt="Árvore DFS"
+                        class="img-fluid mt-3"
+                        style="max-height: 180px"
+                    />
+                </div>
+
+                <!-- Slide 3: DFS Pseudocódigo vs. Código Real -->
+                <div class="carousel-item">
+                    <h2>DFS: Pseudocódigo vs. Código Implementado</h2>
+                    <div class="code-container">
+                        <div class="code-column">
+                            <h5>Pseudocódigo</h5>
+                            <pre class="pseudo-code">
+função DFS(grafo, verticeInicial):
+    visitados = novo Conjunto()
+    
+    pilha = nova Pilha()
+    pilha.push(verticeInicial)
+    
+    enquanto pilha não estiver vazia:
+        vertice = pilha.pop()
+        
+        se vertice não estiver em visitados:
+            adiciona vertice ao conjunto visitados
+            processaVertice(vertice)
+            
+            para cada vizinho de vertice no grafo:
+                se vizinho não estiver em visitados E
+                   vizinho não estiver na pilha:
+                    pilha.push(vizinho)
+    
+    retorna visitados</pre
+                            >
+                        </div>
+                        <div class="code-column">
+                            <h5>Implementação JavaScript</h5>
+                            <pre class="real-code">
+function dfs(graph, startVertex, callback) {
+    if (!graph.vertices.has(startVertex)) 
+        return new Set();
+
+    const visited = new Set();
+    const stack = [startVertex];
+
+    while (stack.length > 0) {
+        const vertex = stack.pop();
+
+        if (!visited.has(vertex)) {
+            visited.add(vertex);
+            callback && callback(vertex);
+
+            const neighbors = graph.getNeighbors(vertex);
+            for (let i = neighbors.length - 1; i >= 0; i--) {
+                const neighbor = neighbors[i];
+                if (!visited.has(neighbor) && 
+                    !stack.includes(neighbor)) {
+                    stack.push(neighbor);
+                }
+            }
+        }
+    }
+
+    return visited;
+}</pre
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 4: Algoritmo BFS - Explicação -->
+                <div class="carousel-item">
+                    <h2>Busca em Largura (BFS)</h2>
+                    <p class="lead">
+                        Explora o grafo visitando todos os vizinhos do vértice
+                        atual antes de avançar para o próximo nível.
+                    </p>
+
+                    <div class="card mb-3">
+                        <div class="card-header">Funcionamento do BFS</div>
+                        <div class="card-body text-start">
+                            <ol>
+                                <li>Inicia a partir de um vértice inicial.</li>
+                                <li>
+                                    Usa uma <strong>fila</strong> para controlar
+                                    a ordem de exploração.
+                                </li>
+                                <li>
+                                    Para cada vértice, visita todos os seus
+                                    vizinhos antes de avançar para o próximo
+                                    nível.
+                                </li>
+                                <li>
+                                    Marca os vértices como visitados assim que
+                                    são descobertos (antes de serem
+                                    processados).
+                                </li>
+                                <li>
+                                    Continua até que todos os vértices
+                                    acessíveis tenham sido visitados.
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/4/46/Animated_BFS.gif"
+                        alt="Animação BFS"
+                        class="img-fluid mt-3"
+                        style="max-height: 180px"
+                    />
+                </div>
+
+                <!-- Slide 5: BFS Pseudocódigo vs. Código Real -->
+                <div class="carousel-item">
+                    <h2>BFS: Pseudocódigo vs. Código Implementado</h2>
+                    <div class="code-container">
+                        <div class="code-column">
+                            <h5>Pseudocódigo</h5>
+                            <pre class="pseudo-code">
+função BFS(grafo, verticeInicial):
+    visitados = novo Conjunto()
+    
+    fila = nova Fila()
+    fila.enfileira(verticeInicial)
+    adiciona verticeInicial ao conjunto visitados
+    
+    enquanto fila não estiver vazia:
+        vertice = fila.desenfileira()
+        processaVertice(vertice)
+        
+        para cada vizinho de vertice no grafo:
+            se vizinho não estiver em visitados:
+                adiciona vizinho ao conjunto visitados
+                fila.enfileira(vizinho)
+    
+    retorna visitados</pre
+                            >
+                        </div>
+                        <div class="code-column">
+                            <h5>Implementação JavaScript</h5>
+                            <pre class="real-code">
+function bfs(graph, startVertex, callback) {
+    if (!graph.vertices.has(startVertex)) 
+        return new Set();
+
+    const visited = new Set();
+    const queue = [startVertex];
+    visited.add(startVertex);
+
+    while (queue.length > 0) {
+        const vertex = queue.shift();
+        callback && callback(vertex);
+
+        const neighbors = graph.getNeighbors(vertex);
+        for (const neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor);
+                queue.push(neighbor);
+            }
+        }
+    }
+
+    return visited;
+}</pre
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 6: Verificação de Conectividade -->
+                <div class="carousel-item">
+                    <h2>Verificação de Conectividade</h2>
+                    <p class="lead">
+                        Um grafo é conexo se existe um caminho entre cada par de
+                        vértices.
+                    </p>
+
+                    <div class="code-container">
+                        <div class="code-column">
+                            <h5>Pseudocódigo</h5>
+                            <pre class="pseudo-code">
+função verificaConectividade(grafo):
+    se grafo não tiver vértices:
+        retorna verdadeiro
+        
+    verticeInicial = qualquer vértice do grafo
+    
+    visitados = DFS(grafo, verticeInicial)
+    
+    se tamanho(visitados) == número de vértices no grafo:
+        retorna verdadeiro
+    senão:
+        retorna falso</pre
+                            >
+                        </div>
+                        <div class="code-column">
+                            <h5>Implementação JavaScript</h5>
+                            <pre class="real-code">
+function checkConnectivity(graph) {
+    const vertices = Array.from(graph.vertices);
+    if (vertices.length === 0) 
+        return true;
+
+    const visited = dfs(graph, vertices[0]);
+    return visited.size === graph.vertices.size;
+}</pre
+                            >
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <p>
+                                <strong>Estratégia:</strong> Se conseguirmos
+                                alcançar todos os vértices a partir de um único
+                                vértice inicial, então o grafo é conexo.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 7: Diferenças DFS vs BFS -->
+                <div class="carousel-item">
+                    <h2>DFS vs BFS: Comparação</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-primary text-white">
+                                    DFS (Busca em Profundidade)
+                                </div>
+                                <div class="card-body">
+                                    <ul class="text-start">
+                                        <li>
+                                            Usa <strong>pilha</strong> (LIFO)
+                                        </li>
+                                        <li>Explora profundidade primeiro</li>
+                                        <li>
+                                            Bom para encontrar caminhos
+                                            distantes
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-header bg-success text-white">
+                                    BFS (Busca em Largura)
+                                </div>
+                                <div class="card-body">
+                                    <ul class="text-start">
+                                        <li>
+                                            Usa <strong>fila</strong> (FIFO)
+                                        </li>
+                                        <li>Explora largura primeiro</li>
+                                        <li>
+                                            Bom para encontrar caminhos mais
+                                            curtos
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 8: Conclusão -->
+                <div class="carousel-item">
+                    <h2>Conclusão</h2>
+                    <p class="lead">
+                        A escolha entre DFS e BFS depende do problema específico
+                        que você está tentando resolver.
+                    </p>
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h3>Resumo</h3>
+                            <ul class="text-start">
+                                <li>
+                                    DFS é útil para explorar caminhos profundos
+                                    e detectar ciclos.
+                                </li>
+                                <li>
+                                    BFS é útil para encontrar o caminho mais
+                                    curto em grafos não ponderados.
+                                </li>
+                                <li>
+                                    Ambos os algoritmos podem ser usados para
+                                    verificar a conectividade de um grafo.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Graph_traversal.svg"
+                        alt="Comparação DFS e BFS"
+                        class="img-fluid mt-3"
+                        style="max-height: 200px"
+                    />
+                </div>
+            </div>
+
+            <!-- Controles do carrossel -->
+            <div class="controls">
+                <button
+                    class="btn btn-primary"
+                    type="button"
+                    data-bs-target="#presentationCarousel"
+                    data-bs-slide="prev"
+                >
+                    Anterior
+                </button>
+                <button
+                    class="btn btn-primary"
+                    type="button"
+                    data-bs-target="#presentationCarousel"
+                    data-bs-slide="next"
+                >
+                    Próximo
+                </button>
+            </div>
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
