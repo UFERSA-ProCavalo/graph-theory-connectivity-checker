@@ -20,6 +20,10 @@ textarea {
     font-family: monospace;
     margin: 10px 0;
 }
+a {
+    color: #2196f3;
+    text-decoration: none;
+}
 button {
     padding: 8px 15px;
     background-color: #4caf50;
