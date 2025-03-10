@@ -1,927 +1,909 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Verificador de Conectividade em Teoria dos Grafos</title>
-        <!-- Incluir Viz.js para renderização do grafo -->
-        <script src="https://unpkg.com/viz.js@2.1.2/viz.js"></script>
-        <script src="https://unpkg.com/viz.js@2.1.2/full.render.js"></script>
-        <link rel="stylesheet" href="styles.css" />
-    </head>
-    <body>
-        <h1>Verificador de Conectividade em Teoria dos Grafos</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verificador de Conectividade em Teoria dos Grafos</title>
+    <!-- Incluir Viz.js para renderização do grafo -->
+    <script src="https://unpkg.com/viz.js@2.1.2/viz.js"></script>
+    <script src="https://unpkg.com/viz.js@2.1.2/full.render.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.5.0/dist/svg-pan-zoom.min.js"></script>
 
-        <div class="section">
-            <h2>Entrada do Grafo</h2>
-            <p>Digite a definição do grafo ou carregue de um arquivo:</p>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>Verificador de Conectividade em Teoria dos Grafos</h1>
 
-            <label class="file-input-label" for="file-input"
-                >Carregar do arquivo</label
-            >
-            <input type="file" id="file-input" accept=".txt" />
-            <button id="example-btn">Carregar Exemplo</button>
-            <textarea
-                id="graph-input"
-                placeholder="Digite a definição do grafo aqui. Exemplo:
+    <div class="section">
+      <h2>Entrada do Grafo</h2>
+      <p>Digite a definição do grafo ou carregue de um arquivo:</p>
+
+      <label class="file-input-label" for="file-input"
+        >Carregar do arquivo</label
+      >
+      <input type="file" id="file-input" accept=".txt" />
+      <button id="example-btn">Carregar Exemplo</button>
+      <textarea
+        id="graph-input"
+        placeholder="Digite a definição do grafo aqui. Exemplo:
 A - B 5
 B - C 3
 C - D 2
 A - D 4"
-            ></textarea>
-            <button id="build-graph-btn">Construir Grafo</button>
+      ></textarea>
+      <button id="build-graph-btn">Construir Grafo</button>
+    </div>
+
+    <div class="section">
+      <h2>Análise do Grafo</h2>
+
+      <div class="workflow-section">
+        <div class="workflow-step">
+          <div class="step-title">Passo 1: Selecione o Algoritmo</div>
+          <div class="algorithm-buttons">
+            <button id="dfs-btn" class="algorithm-btn" disabled>
+              DFS (Busca em Profundidade)
+            </button>
+            <button id="bfs-btn" class="algorithm-btn" disabled>
+              BFS (Busca em Largura)
+            </button>
+          </div>
         </div>
 
-        <div class="section">
-            <a href="apresentacao.html">Explicação</a>
-            <!-- Controles de passo a passo -->
-            <div class="step-controls" id="step-controls">
-                <div class="step-title">Verificação Passo a Passo</div>
-                <div class="controls-container">
-                    <button id="next-step-btn" disabled>Próximo Passo</button>
-                    <button id="play-all-btn" disabled>Executar Tudo</button>
-                    <button id="reset-btn" disabled>Reiniciar</button>
-                </div>
-                <div class="current-status" id="current-status"></div>
-            </div>
-            <h2>Visualização do Grafo</h2>
-            <div id="graph-visualization"></div>
+        <div class="workflow-step">
+          <div class="step-title">
+            Passo 2: Verificar Conectividade
+          </div>
+          <div class="connectivity-controls">
+            <select id="start-vertex-select" disabled>
+              <option value="">
+                Selecione o vértice inicial
+              </option>
+            </select>
+            <button id="connectivity-btn" disabled>
+              Verificar Conectividade
+            </button>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <div class="section">
-            <h2>Análise do Grafo</h2>
+    <div class="section">
+      <a href="apresentacao.html">Explicação</a>
+      <!-- Controles de passo a passo -->
+      <div class="step-controls" id="step-controls">
+        <div class="step-title">Verificação Passo a Passo</div>
 
-            <div class="workflow-section">
-                <div class="workflow-step">
-                    <div class="step-title">Passo 1: Selecione o Algoritmo</div>
-                    <div class="algorithm-buttons">
-                        <button id="dfs-btn" class="algorithm-btn" disabled>
-                            DFS (Busca em Profundidade)
-                        </button>
-                        <button id="bfs-btn" class="algorithm-btn" disabled>
-                            BFS (Busca em Largura)
-                        </button>
-                    </div>
-                </div>
+        <div class="current-status" id="current-status"></div>
+      </div>
+      <h2>Visualização do Grafo</h2>
+      <div class="controls-container">
+        <button id="next-step-btn" disabled>Próximo Passo</button>
+        <button id="play-all-btn" disabled>Executar Tudo</button>
+        <button id="reset-btn" disabled>Reiniciar</button>
+      </div>
+      <div id="graph-visualization"></div>
+    </div>
 
-                <div class="workflow-step">
-                    <div class="step-title">
-                        Passo 2: Verificar Conectividade
-                    </div>
-                    <div class="connectivity-controls">
-                        <select id="start-vertex-select" disabled>
-                            <option value="">
-                                Selecione o vértice inicial
-                            </option>
-                        </select>
-                        <button id="connectivity-btn" disabled>
-                            Verificar Conectividade
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Container de notificações -->
+    <div id="toast-container"></div>
 
-        <!-- Container de notificações -->
-        <div id="toast-container"></div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        let currentGraph = null;
+        let vizInstance = new Viz();
+        let algorithmSteps = [];
+        let currentStepIndex = -1;
+        let animationTimeout = null;
+        let visitedVertices = new Set();
+        let processingQueue = [];
+        let currentAlgorithm = null;
+        let panZoomInstance = null; // Store the panZoom instance globally
+        let currentZoom = 1; // Default zoom level (1x)
+        let currentPan = { x: 0, y: 0 }; // Default pan position
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                let currentGraph = null;
-                let vizInstance = new Viz();
-                let algorithmSteps = [];
-                let currentStepIndex = -1;
-                let animationTimeout = null;
-                let visitedVertices = new Set();
-                let processingQueue = [];
-                let currentAlgorithm = null;
+        // DOM elements
+        const graphInput = document.getElementById("graph-input");
+        const buildGraphBtn = document.getElementById("build-graph-btn");
+        const fileInput = document.getElementById("file-input");
+        const exampleBtn = document.getElementById("example-btn");
+        const graphVisualization = document.getElementById(
+          "graph-visualization"
+        );
+        const dfsBtn = document.getElementById("dfs-btn");
+        const bfsBtn = document.getElementById("bfs-btn");
+        const startVertexSelect = document.getElementById(
+          "start-vertex-select"
+        );
+        const connectivityBtn = document.getElementById("connectivity-btn");
+        const stepControls = document.getElementById("step-controls");
+        const nextStepBtn = document.getElementById("next-step-btn");
+        const playAllBtn = document.getElementById("play-all-btn");
+        const resetBtn = document.getElementById("reset-btn");
+        const currentStatus = document.getElementById("current-status");
+        const toastContainer = document.getElementById("toast-container");
 
-                // DOM elements
-                const graphInput = document.getElementById("graph-input");
-                const buildGraphBtn =
-                    document.getElementById("build-graph-btn");
-                const fileInput = document.getElementById("file-input");
-                const exampleBtn = document.getElementById("example-btn");
-                const graphVisualization = document.getElementById(
-                    "graph-visualization"
-                );
-                const dfsBtn = document.getElementById("dfs-btn");
-                const bfsBtn = document.getElementById("bfs-btn");
-                const startVertexSelect = document.getElementById(
-                    "start-vertex-select"
-                );
-                const connectivityBtn =
-                    document.getElementById("connectivity-btn");
-                const stepControls = document.getElementById("step-controls");
-                const nextStepBtn = document.getElementById("next-step-btn");
-                const playAllBtn = document.getElementById("play-all-btn");
-                const resetBtn = document.getElementById("reset-btn");
-                const currentStatus = document.getElementById("current-status");
-                const toastContainer =
-                    document.getElementById("toast-container");
-
-                // Carregar exemplo
-                exampleBtn.addEventListener("click", () => {
-                    graphInput.value = `# Exemplo de grafo não-direcionado com pesos
+        // Carregar exemplo
+        exampleBtn.addEventListener("click", () => {
+          graphInput.value = `# Exemplo de grafo não-direcionado com pesos
 A - B 5
 B - C 3
 C - D 2
 D - A 4
 B - D 6`;
-                });
-
-                // File input handling
-                fileInput.addEventListener("change", function (e) {
-                    const file = e.target.files[0];
-                    if (!file) return;
-
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        graphInput.value = e.target.result;
-                    };
-                    reader.readAsText(file);
-                });
-
-                // Construir grafo a partir da entrada
-                buildGraphBtn.addEventListener("click", () => {
-                    try {
-                        const input = graphInput.value.trim();
-                        if (!input) {
-                            showToast(
-                                "Erro: A entrada do grafo está vazia.",
-                                "error"
-                            );
-                            return;
-                        }
-
-                        currentGraph = buildGraph(input);
-                        console.log(currentGraph);
-                        if (currentGraph) {
-                            renderGraph(currentGraph);
-                            enableAlgorithmButtons();
-                            populateStartVertexDropdown(currentGraph);
-                            showToast(
-                                "Grafo construído com sucesso!",
-                                "success"
-                            );
-                            resetVisualization();
-                            resetWorkflow();
-                        }
-                    } catch (error) {
-                        showToast(`Erro: ${error.message}`, "error");
-                    }
-                });
-
-                // Seleção de algoritmo
-                dfsBtn.addEventListener("click", () => {
-                    selectAlgorithm("dfs");
-                });
-
-                bfsBtn.addEventListener("click", () => {
-                    selectAlgorithm("bfs");
-                });
-
-                function selectAlgorithm(algo) {
-                    currentAlgorithm = algo;
-
-                    // Atualizar estilos dos botões
-                    dfsBtn.classList.remove("selected");
-                    bfsBtn.classList.remove("selected");
-
-                    if (algo === "dfs") {
-                        dfsBtn.classList.add("selected");
-                    } else {
-                        bfsBtn.classList.add("selected");
-                    }
-
-                    // Habilitar verificação de conectividade
-                    connectivityBtn.disabled = false;
-                    startVertexSelect.disabled = false;
-                }
-
-                // Verificação de conectividade
-                connectivityBtn.addEventListener("click", () => {
-                    const startVertex = startVertexSelect.value;
-
-                    if (!startVertex) {
-                        showToast(
-                            "Por favor, selecione um vértice inicial.",
-                            "error"
-                        );
-                        return;
-                    }
-
-                    const isConnected = checkConnectivity(
-                        currentGraph,
-                        currentAlgorithm,
-                        startVertex
-                    );
-
-                    // Mostrar resultado como toast e no div de resultado
-                    const message = `O grafo é ${
-                        isConnected ? "conexo" : "não conexo"
-                    }`;
-                    if (isConnected) {
-                        stepControls.style.display = "block";
-                    }
-                    showToast(message, isConnected ? "success" : "error");
-
-                    // Preparar para visualização passo a passo
-                    if (currentAlgorithm === "dfs") {
-                        prepareDfsSteps(currentGraph, startVertex);
-                    } else {
-                        prepareBfsSteps(currentGraph, startVertex);
-                    }
-
-                    // Habilitar controles de passo a passo
-                    enableStepControls();
-                    currentStepIndex = -1;
-                    setStatus(
-                        `Pronto para iniciar a visualização ${
-                            currentAlgorithm === "dfs"
-                                ? "DFS (Busca em Profundidade)"
-                                : "BFS (Busca em Largura)"
-                        } a partir do vértice ${startVertex}`
-                    );
-                });
-
-                // Botões de controle de passo
-                nextStepBtn.addEventListener("click", executeNextStep);
-
-                playAllBtn.addEventListener("click", function () {
-                    playAllSteps();
-                });
-
-                resetBtn.addEventListener("click", function () {
-                    // Reset visualization state
-                    currentStepIndex = -1;
-                    setStatus("");
-                    // Reset the graph visualization to its original state
-                    renderGraph(currentGraph);
-                });
-
-                // Sistema de notificação toast
-                function showToast(message, type = "info") {
-                    const toast = document.createElement("div");
-                    toast.className = `toast toast-${type}`;
-                    toast.textContent = message;
-
-                    toastContainer.appendChild(toast);
-
-                    // Forçar refluxo
-                    toast.offsetHeight;
-
-                    // Mostrar o toast
-                    toast.classList.add("show");
-
-                    // Remover após atraso
-                    setTimeout(() => {
-                        toast.classList.remove("show");
-                        setTimeout(() => {
-                            toastContainer.removeChild(toast);
-                        }, 300);
-                    }, 3000);
-                }
-
-                // Funções auxiliares
-
-                function setStatus(text) {
-                    currentStatus.textContent = text;
-                }
-
-                function enableAlgorithmButtons() {
-                    dfsBtn.disabled = false;
-                    bfsBtn.disabled = false;
-                }
-
-                function resetWorkflow() {
-                    // Resetar seleção de algoritmo
-                    dfsBtn.classList.remove("selected");
-                    bfsBtn.classList.remove("selected");
-                    currentAlgorithm = null;
-
-                    // Desabilitar verificação de conectividade
-                    connectivityBtn.disabled = true;
-
-                    // Reset the start vertex dropdown
-                    if (currentGraph) {
-                        populateStartVertexDropdown(currentGraph);
-                    } else {
-                        startVertexSelect.disabled = true;
-                    }
-
-                    // Desabilitar controles de passo
-                    disableStepControls();
-                }
-
-                function resetVisualization() {
-                    algorithmSteps = [];
-                    currentStepIndex = -1;
-                    visitedVertices = new Set();
-                    processingQueue = [];
-                    clearTimeout(animationTimeout);
-                    setStatus("");
-
-                    if (currentAlgorithm) {
-                        enableStepControls();
-                    } else {
-                        disableStepControls();
-                    }
-                }
-
-                // Função para habilitar controles de passo
-                function enableStepControls() {
-                    nextStepBtn.disabled = false;
-                    playAllBtn.disabled = false;
-                    resetBtn.disabled = false;
-                }
-
-                // Função para desabilitar controles de passo
-                function disableStepControls() {
-                    nextStepBtn.disabled = true;
-                    playAllBtn.disabled = true;
-                    resetBtn.disabled = true;
-                    currentStatus.textContent = "";
-                }
-
-                // Function to populate the start vertex dropdown
-                function populateStartVertexDropdown(graph) {
-                    startVertexSelect.innerHTML =
-                        '<option value="">Selecione o vértice inicial</option>';
-
-                    if (graph && graph.vertices.size > 0) {
-                        const vertices = Array.from(graph.vertices).sort();
-                        vertices.forEach((vertex) => {
-                            const option = document.createElement("option");
-                            option.value = vertex;
-                            option.textContent = vertex;
-                            startVertexSelect.appendChild(option);
-                        });
-                        startVertexSelect.disabled = false;
-                    } else {
-                        startVertexSelect.disabled = true;
-                    }
-                }
-
-                // Rest of the code remains unchanged
-                class Graph {
-                    constructor(isDirected = false) {
-                        this.vertices = new Set();
-                        this.edges = [];
-                        this.isDirected = isDirected;
-                    }
-
-                    addVertex(vertex) {
-                        this.vertices.add(vertex);
-                    }
-
-                    addEdge(source, destination, weight = 0) {
-                        // Changed default to 0
-                        this.addVertex(source);
-                        this.addVertex(destination);
-
-                        const edgeExists = this.edges.some(
-                            (edge) =>
-                                edge.source === source &&
-                                edge.destination === destination
-                        );
-
-                        if (!edgeExists) {
-                            this.edges.push({ source, destination, weight });
-                        }
-
-                        if (!this.isDirected) {
-                            const reverseEdgeExists = this.edges.some(
-                                (edge) =>
-                                    edge.source === destination &&
-                                    edge.destination === source
-                            );
-
-                            if (!reverseEdgeExists) {
-                                this.edges.push({
-                                    source: destination,
-                                    destination: source,
-                                    weight,
-                                });
-                            }
-                        }
-                    }
-
-                    getNeighbors(vertex) {
-                        return this.edges
-                            .filter((edge) => edge.source === vertex)
-                            .map((edge) => edge.destination);
-                    }
-                }
-
-                // Build graph from text input
-                function buildGraph(text) {
-                    const lines = text.split("\n");
-                    let isDirected = null;
-                    let hasValidEdge = false;
-
-                    // First pass: determine graph type and check for valid edges
-                    for (const line of lines) {
-                        const trimmedLine = line.trim();
-                        if (trimmedLine === "" || trimmedLine.startsWith("#"))
-                            continue;
-
-                        // Check for valid directed edge format (A->B)
-                        if (trimmedLine.includes("->")) {
-                            const parts = trimmedLine.split("->");
-                            if (
-                                parts.length !== 2 ||
-                                !parts[0].trim() ||
-                                !parts[1].trim()
-                            ) {
-                                throw new Error(
-                                    "Formato inválido para aresta direcionada. Use: 'A->B' ou 'A->B 5'"
-                                );
-                            }
-                            if (isDirected === false) {
-                                throw new Error(
-                                    "Grafos mistos: Não é possível ter arestas direcionadas e não direcionadas"
-                                );
-                            }
-                            isDirected = true;
-                            hasValidEdge = true;
-                        }
-                        // Check for valid undirected edge format (A - B)
-                        else if (trimmedLine.includes(" - ")) {
-                            const parts = trimmedLine.split(" - ");
-                            if (
-                                parts.length !== 2 ||
-                                !parts[0].trim() ||
-                                !parts[1].trim()
-                            ) {
-                                throw new Error(
-                                    "Formato inválido para aresta não direcionada. Use: 'A - B' ou 'A - B 5'"
-                                );
-                            }
-                            if (isDirected === true) {
-                                throw new Error(
-                                    "Grafos mistos: Não é possível ter arestas direcionadas e não direcionadas"
-                                );
-                            }
-                            isDirected = false;
-                            hasValidEdge = true;
-                        }
-                    }
-
-                    // Check if there are any valid edges
-                    if (!hasValidEdge) {
-                        throw new Error(
-                            "O grafo deve ter pelo menos uma aresta válida"
-                        );
-                    }
-
-                    const graph = new Graph(isDirected);
-                    const processedEdges = new Set();
-
-                    // Second pass: build the graph
-                    for (const line of lines) {
-                        const trimmedLine = line.trim();
-                        if (trimmedLine === "" || trimmedLine.startsWith("#"))
-                            continue;
-
-                        let source,
-                            destination,
-                            weight = 0;
-                        let parts;
-
-                        if (isDirected) {
-                            parts = trimmedLine.split("->");
-                            [source, destination] = parts;
-                        } else {
-                            parts = trimmedLine.split(" - ");
-                            [source, destination] = parts;
-                        }
-
-                        // Parse source and destination with potential weight
-                        let destParts = destination.trim().split(" ");
-                        destination = destParts[0];
-                        weight =
-                            destParts.length > 1
-                                ? parseInt(destParts[1]) || 0
-                                : 0;
-
-                        if (!isDirected) {
-                            const edgeKey1 = `${source}-${destination}`;
-                            const edgeKey2 = `${destination}-${source}`;
-                            if (
-                                processedEdges.has(edgeKey1) ||
-                                processedEdges.has(edgeKey2)
-                            )
-                                continue;
-                            processedEdges.add(edgeKey1);
-                        }
-
-                        graph.addEdge(source.trim(), destination, weight);
-                    }
-
-                    // Final validation: check if graph has vertices and edges
-                    if (graph.vertices.size === 0) {
-                        throw new Error("O grafo não pode estar vazio");
-                    }
-
-                    if (graph.edges.length === 0) {
-                        throw new Error(
-                            "O grafo deve ter pelo menos uma aresta"
-                        );
-                    }
-
-                    return graph;
-                }
-
-                // Generate DOT representation of the graph
-                function generateDotGraph(
-                    graph,
-                    highlightedVertex = null,
-                    highlightedEdges = [],
-                    visitedVertices = [],
-                    seenVertices = new Set()
-                ) {
-                    const isDirected = graph.isDirected;
-                    let dotContent = `${
-                        isDirected ? "digraph" : "graph"
-                    } G {\n`;
-                    dotContent +=
-                        '  node [style=filled, fillcolor="lightblue", fontname="Arial"];\n';
-                    dotContent += `  edge [${
-                        isDirected ? "arrowhead=vee, arrowsize=0.8" : ""
-                    }];\n`;
-
-                    // Add vertices with state-based highlighting
-                    for (const vertex of graph.vertices) {
-                        let nodeAttributes = "";
-
-                        if (vertex === highlightedVertex) {
-                            // Currently processing vertex (red)
-                            nodeAttributes =
-                                ' [fillcolor="#ff6347", color="red", penwidth=3]';
-                        } else if (visitedVertices.includes(vertex)) {
-                            // Visited vertices (grey)
-                            nodeAttributes =
-                                ' [fillcolor="#a9a9a9", color="#696969"]';
-                        } else if (seenVertices.has(vertex)) {
-                            // Seen but not visited vertices (green)
-                            nodeAttributes =
-                                ' [fillcolor="#90EE90", color="#006400"]';
-                        }
-
-                        dotContent += `  "${vertex}"${nodeAttributes};\n`;
-                    }
-
-                    // Process edges with deduplication
-                    const processedEdges = new Set();
-
-                    for (const edge of graph.edges) {
-                        const edgeKey = isDirected
-                            ? `${edge.source}->${edge.destination}`
-                            : `${edge.source}--${edge.destination}`;
-                        const reverseKey = `${edge.destination}--${edge.source}`;
-
-                        if (!isDirected && processedEdges.has(reverseKey)) {
-                            continue;
-                        }
-
-                        if (!processedEdges.has(edgeKey)) {
-                            processedEdges.add(edgeKey);
-
-                            const edgeOp = isDirected ? "->" : "--";
-
-                            // Check if this edge should be highlighted
-                            let edgeAttributes = "";
-                            if (
-                                isEdgeHighlighted(
-                                    edge.source,
-                                    edge.destination,
-                                    highlightedEdges
-                                )
-                            ) {
-                                edgeAttributes =
-                                    ' [color="#ff6347", penwidth=3]';
-                            }
-
-                            dotContent += `  "${edge.source}" ${edgeOp} "${edge.destination}"${edgeAttributes};\n`;
-                        }
-                    }
-
-                    dotContent += "}";
-                    return dotContent;
-                }
-
-                function isEdgeHighlighted(
-                    source,
-                    destination,
-                    highlightedEdges
-                ) {
-                    return highlightedEdges.some(
-                        (edge) =>
-                            (edge.source === source &&
-                                edge.destination === destination) ||
-                            (!currentGraph.isDirected &&
-                                edge.source === destination &&
-                                edge.destination === source)
-                    );
-                }
-
-                // Render graph with viz.js
-                function renderGraph(
-                    graph,
-                    highlightedVertex = null,
-                    highlightedEdges = [],
-                    visitedVertices = [],
-                    seenVertices = new Set()
-                ) {
-                    const dotGraph = generateDotGraph(
-                        graph,
-                        highlightedVertex,
-                        highlightedEdges,
-                        visitedVertices,
-                        seenVertices
-                    );
-
-                    vizInstance
-                        .renderSVGElement(dotGraph)
-                        .then((element) => {
-                            graphVisualization.innerHTML = "";
-                            graphVisualization.appendChild(element);
-                        })
-                        .catch((error) => {
-                            console.error("Error rendering graph:", error);
-                            graphVisualization.innerHTML = `<p>Error rendering graph: ${error.message}</p>`;
-                        });
-                }
-
-                // DFS algorithm
-                function dfs(graph, startVertex) {
-                    if (!graph.vertices.has(startVertex)) return new Set();
-
-                    const visited = new Set();
-                    const stack = [startVertex];
-
-                    while (stack.length > 0) {
-                        const vertex = stack.pop();
-
-                        if (!visited.has(vertex)) {
-                            visited.add(vertex);
-
-                            const neighbors = graph.getNeighbors(vertex);
-                            for (let i = neighbors.length - 1; i >= 0; i--) {
-                                const neighbor = neighbors[i];
-                                // Don't add if already visited or already in stack
-                                if (
-                                    !visited.has(neighbor) &&
-                                    !stack.includes(neighbor)
-                                ) {
-                                    stack.push(neighbor);
-                                }
-                            }
-                        }
-                    }
-
-                    return visited;
-                }
-
-                // Prepare DFS steps for visualization
-                function prepareDfsSteps(graph, startVertex) {
-                    algorithmSteps = [];
-                    visitedVertices = new Set();
-                    seenVertices = new Set([startVertex]); // Track seen vertices
-                    const stack = [startVertex];
-
-                    // Initial step - show start vertex as seen
-                    algorithmSteps.push({
-                        type: "initialize",
-                        vertex: startVertex,
-                        stack: [...stack],
-                        visited: new Set(),
-                        seen: new Set(seenVertices),
-                        highlightedEdges: [],
-                    });
-
-                    while (stack.length > 0) {
-                        const vertex = stack.pop();
-
-                        if (!visitedVertices.has(vertex)) {
-                            // Vertex processing step - turn it grey
-                            visitedVertices.add(vertex);
-                            algorithmSteps.push({
-                                type: "visit",
-                                vertex: vertex,
-                                stack: [...stack],
-                                visited: new Set(visitedVertices),
-                                seen: new Set(seenVertices),
-                                highlightedEdges: [],
-                            });
-
-                            const neighbors = graph.getNeighbors(vertex);
-                            const highlightedEdges = [];
-
-                            // Add neighbors to stack in reverse order for correct DFS
-                            for (let i = neighbors.length - 1; i >= 0; i--) {
-                                const neighbor = neighbors[i];
-                                if (
-                                    !visitedVertices.has(neighbor) &&
-                                    !seenVertices.has(neighbor)
-                                ) {
-                                    stack.push(neighbor);
-                                    seenVertices.add(neighbor); // Mark as seen when added to stack
-                                    highlightedEdges.push({
-                                        source: vertex,
-                                        destination: neighbor,
-                                    });
-                                }
-                            }
-
-                            // Only add the exploring step if there are new neighbors to explore
-                            if (highlightedEdges.length > 0) {
-                                algorithmSteps.push({
-                                    type: "explore",
-                                    vertex: vertex,
-                                    stack: [...stack],
-                                    visited: new Set(visitedVertices),
-                                    seen: new Set(seenVertices),
-                                    highlightedEdges: highlightedEdges,
-                                });
-                            }
-                        }
-                    }
-                }
-
-                // BFS algorithm
-                function bfs(graph, startVertex) {
-                    if (!graph.vertices.has(startVertex)) return new Set();
-
-                    const visited = new Set();
-                    const queue = [startVertex];
-                    visited.add(startVertex);
-
-                    while (queue.length > 0) {
-                        const vertex = queue.shift();
-
-                        const neighbors = graph.getNeighbors(vertex);
-                        for (const neighbor of neighbors) {
-                            if (!visited.has(neighbor)) {
-                                visited.add(neighbor);
-                                queue.push(neighbor);
-                            }
-                        }
-                    }
-
-                    return visited;
-                }
-
-                // Prepare BFS steps for visualization
-                function prepareBfsSteps(graph, startVertex) {
-                    algorithmSteps = [];
-                    visitedVertices = new Set();
-                    seenVertices = new Set([startVertex]); // Track seen vertices
-                    const queue = [startVertex];
-                    visitedVertices.add(startVertex);
-
-                    // Initial step - show start vertex as seen
-                    algorithmSteps.push({
-                        type: "initialize",
-                        vertex: startVertex,
-                        queue: [...queue],
-                        visited: new Set(visitedVertices),
-                        seen: new Set(seenVertices),
-                        highlightedEdges: [],
-                    });
-
-                    while (queue.length > 0) {
-                        const vertex = queue.shift();
-
-                        // Vertex processing step - turn it grey
-                        algorithmSteps.push({
-                            type: "visit",
-                            vertex: vertex,
-                            queue: [...queue],
-                            visited: new Set(visitedVertices),
-                            seen: new Set(seenVertices),
-                            highlightedEdges: [],
-                        });
-
-                        const neighbors = graph.getNeighbors(vertex);
-                        const highlightedEdges = [];
-
-                        // Process each neighbor
-                        for (const neighbor of neighbors) {
-                            if (
-                                !visitedVertices.has(neighbor) &&
-                                !seenVertices.has(neighbor)
-                            ) {
-                                seenVertices.add(neighbor); // Mark as seen when discovered
-                                queue.push(neighbor);
-                                highlightedEdges.push({
-                                    source: vertex,
-                                    destination: neighbor,
-                                });
-                            }
-                        }
-
-                        // Only add the exploring step if there are new neighbors to explore
-                        if (highlightedEdges.length > 0) {
-                            algorithmSteps.push({
-                                type: "explore",
-                                vertex: vertex,
-                                queue: [...queue],
-                                visited: new Set(visitedVertices),
-                                seen: new Set(seenVertices),
-                                highlightedEdges: highlightedEdges,
-                            });
-                        }
-
-                        // After exploring, mark current vertex as visited
-                        visitedVertices.add(vertex);
-                    }
-                }
-
-                // Executar próximo passo na visualização
-                function executeNextStep() {
-                    if (currentStepIndex >= algorithmSteps.length - 1) {
-                        setStatus("Algoritmo concluído!");
-                        return;
-                    }
-
-                    currentStepIndex++;
-                    const step = algorithmSteps[currentStepIndex];
-                    const visitedArray = Array.from(step.visited);
-                    const container =
-                        currentAlgorithm === "dfs" ? "Pilha" : "Fila";
-                    const containerContents =
-                        currentAlgorithm === "dfs" ? step.stack : step.queue;
-
-                    switch (step.type) {
-                        case "initialize":
-                            setStatus(
-                                `Iniciando ${
-                                    currentAlgorithm === "dfs"
-                                        ? "DFS (Busca em Profundidade)"
-                                        : "BFS (Busca em Largura)"
-                                } a partir do vértice ${step.vertex}`
-                            );
-                            break;
-                        case "visit":
-                            setStatus(
-                                `Visitando vértice: ${
-                                    step.vertex
-                                }. ${container}: [${containerContents.join(
-                                    ", "
-                                )}]`
-                            );
-                            break;
-                        case "explore":
-                            setStatus(
-                                `Explorando vizinhos de ${
-                                    step.vertex
-                                }. ${container}: [${containerContents.join(
-                                    ", "
-                                )}]`
-                            );
-                            break;
-                    }
-
-                    renderGraph(
-                        currentGraph,
-                        step.vertex,
-                        step.highlightedEdges,
-                        visitedArray,
-                        step.seen
-                    );
-                }
-
-                // Reproduzir todos os passos restantes com animação
-                function playAllSteps() {
-                    if (currentStepIndex >= algorithmSteps.length - 1) {
-                        return;
-                    }
-
-                    executeNextStep();
-
-                    animationTimeout = setTimeout(() => {
-                        playAllSteps();
-                    }, 1000);
-                }
-
-                // Verificar conectividade
-                function checkConnectivity(graph, algorithm, startVertex) {
-                    const vertices = Array.from(graph.vertices);
-                    if (vertices.length === 0) return true;
-
-                    let visited;
-                    if (algorithm === "dfs") {
-                        visited = dfs(graph, startVertex);
-                    } else {
-                        visited = bfs(graph, startVertex);
-                    }
-                    resetVisualization();
-                    renderGraph(currentGraph);
-                    return visited.size === graph.vertices.size;
-                }
+        });
+
+        // File input handling
+        fileInput.addEventListener("change", function(e) {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            graphInput.value = e.target.result;
+          };
+          reader.readAsText(file);
+        });
+
+        // Construir grafo a partir da entrada
+        buildGraphBtn.addEventListener("click", () => {
+          try {
+            const input = graphInput.value.trim();
+            if (!input) {
+              showToast("Erro: A entrada do grafo está vazia.", "error");
+              return;
+            }
+
+            currentGraph = buildGraph(input);
+            console.log(currentGraph);
+            if (currentGraph) {
+              renderGraph(currentGraph);
+              enableAlgorithmButtons();
+              populateStartVertexDropdown(currentGraph);
+              showToast("Grafo construído com sucesso!", "success");
+              resetVisualization();
+              resetWorkflow();
+            }
+          } catch (error) {
+            showToast(`Erro: ${error.message}`, "error");
+          }
+        });
+
+        // Seleção de algoritmo
+        dfsBtn.addEventListener("click", () => {
+          selectAlgorithm("dfs");
+        });
+
+        bfsBtn.addEventListener("click", () => {
+          selectAlgorithm("bfs");
+        });
+
+        function selectAlgorithm(algo) {
+          currentAlgorithm = algo;
+
+          // Atualizar estilos dos botões
+          dfsBtn.classList.remove("selected");
+          bfsBtn.classList.remove("selected");
+
+          if (algo === "dfs") {
+            dfsBtn.classList.add("selected");
+          } else {
+            bfsBtn.classList.add("selected");
+          }
+
+          // Habilitar verificação de conectividade
+          connectivityBtn.disabled = false;
+          startVertexSelect.disabled = false;
+        }
+
+        // Verificação de conectividade
+        connectivityBtn.addEventListener("click", () => {
+          const startVertex = startVertexSelect.value;
+
+          if (!startVertex) {
+            showToast("Por favor, selecione um vértice inicial.", "error");
+            return;
+          }
+
+          const isConnected = checkConnectivity(
+            currentGraph,
+            currentAlgorithm,
+            startVertex
+          );
+
+          // Mostrar resultado como toast e no div de resultado
+          const message = `O grafo é ${isConnected ? "conexo" : "não conexo"}`;
+          if (isConnected) {
+            stepControls.style.display = "block";
+          }
+          showToast(message, isConnected ? "success" : "error");
+
+          // Preparar para visualização passo a passo
+          if (currentAlgorithm === "dfs") {
+            prepareDfsSteps(currentGraph, startVertex);
+          } else {
+            prepareBfsSteps(currentGraph, startVertex);
+          }
+
+          // Habilitar controles de passo a passo
+          enableStepControls();
+          currentStepIndex = -1;
+          setStatus(
+            `Pronto para iniciar a visualização ${
+              currentAlgorithm === "dfs"
+                ? "DFS (Busca em Profundidade)"
+                : "BFS (Busca em Largura)"
+            } a partir do vértice ${startVertex}`
+          );
+        });
+
+        // Botões de controle de passo
+        nextStepBtn.addEventListener("click", executeNextStep);
+
+        playAllBtn.addEventListener("click", function() {
+          playAllSteps();
+        });
+
+        resetBtn.addEventListener("click", function() {
+          // Reset visualization state
+          currentStepIndex = -1;
+          setStatus("");
+          // Reset the graph visualization to its original state
+          renderGraph(currentGraph);
+        });
+
+        // Sistema de notificação toast
+        function showToast(message, type = "info") {
+          const toast = document.createElement("div");
+          toast.className = `toast toast-${type}`;
+          toast.textContent = message;
+
+          toastContainer.appendChild(toast);
+
+          // Forçar refluxo
+          toast.offsetHeight;
+
+          // Mostrar o toast
+          toast.classList.add("show");
+
+          // Remover após atraso
+          setTimeout(() => {
+            toast.classList.remove("show");
+            setTimeout(() => {
+              toastContainer.removeChild(toast);
+            }, 300);
+          }, 3000);
+        }
+
+        // Funções auxiliares
+
+        function setStatus(text) {
+          currentStatus.textContent = text;
+        }
+
+        function enableAlgorithmButtons() {
+          dfsBtn.disabled = false;
+          bfsBtn.disabled = false;
+        }
+
+        function resetWorkflow() {
+          // Resetar seleção de algoritmo
+          dfsBtn.classList.remove("selected");
+          bfsBtn.classList.remove("selected");
+          currentAlgorithm = null;
+
+          // Desabilitar verificação de conectividade
+          connectivityBtn.disabled = true;
+
+          // Reset the start vertex dropdown
+          if (currentGraph) {
+            populateStartVertexDropdown(currentGraph);
+          } else {
+            startVertexSelect.disabled = true;
+          }
+
+          // Desabilitar controles de passo
+          disableStepControls();
+        }
+
+        function resetVisualization() {
+          if (panZoomInstance) {
+            panZoomInstance.destroy();
+          }
+          algorithmSteps = [];
+          currentStepIndex = -1;
+          visitedVertices = new Set();
+          processingQueue = [];
+          clearTimeout(animationTimeout);
+          setStatus("");
+
+          if (currentAlgorithm) {
+            enableStepControls();
+          } else {
+            disableStepControls();
+          }
+        }
+
+        // Função para habilitar controles de passo
+        function enableStepControls() {
+          nextStepBtn.disabled = false;
+          playAllBtn.disabled = false;
+          resetBtn.disabled = false;
+        }
+
+        // Função para desabilitar controles de passo
+        function disableStepControls() {
+          nextStepBtn.disabled = true;
+          playAllBtn.disabled = true;
+          resetBtn.disabled = true;
+          currentStatus.textContent = "";
+        }
+
+        // Function to populate the start vertex dropdown
+        function populateStartVertexDropdown(graph) {
+          startVertexSelect.innerHTML =
+            '<option value="">Selecione o vértice inicial</option>';
+
+          if (graph && graph.vertices.size > 0) {
+            const vertices = Array.from(graph.vertices).sort();
+            vertices.forEach(vertex => {
+              const option = document.createElement("option");
+              option.value = vertex;
+              option.textContent = vertex;
+              startVertexSelect.appendChild(option);
             });
-        </script>
-    </body>
+            startVertexSelect.disabled = false;
+          } else {
+            startVertexSelect.disabled = true;
+          }
+        }
+
+        // Rest of the code remains unchanged
+        class Graph {
+          constructor(isDirected = false) {
+            this.vertices = new Set();
+            this.edges = [];
+            this.isDirected = isDirected;
+          }
+
+          addVertex(vertex) {
+            this.vertices.add(vertex);
+          }
+
+          addEdge(source, destination, weight = 0) {
+            // Changed default to 0
+            this.addVertex(source);
+            this.addVertex(destination);
+
+            const edgeExists = this.edges.some(
+              edge => edge.source === source && edge.destination === destination
+            );
+
+            if (!edgeExists) {
+              this.edges.push({ source, destination, weight });
+            }
+
+            if (!this.isDirected) {
+              const reverseEdgeExists = this.edges.some(
+                edge =>
+                  edge.source === destination && edge.destination === source
+              );
+
+              if (!reverseEdgeExists) {
+                this.edges.push({
+                  source: destination,
+                  destination: source,
+                  weight
+                });
+              }
+            }
+          }
+
+          getNeighbors(vertex) {
+            return this.edges
+              .filter(edge => edge.source === vertex)
+              .map(edge => edge.destination);
+          }
+        }
+
+        // Build graph from text input
+        function buildGraph(text) {
+          const lines = text.split("\n");
+          let isDirected = null;
+          let hasValidEdge = false;
+
+          // First pass: determine graph type and check for valid edges
+          for (const line of lines) {
+            const trimmedLine = line.trim();
+            if (trimmedLine === "" || trimmedLine.startsWith("#")) continue;
+
+            // Check for valid directed edge format (A->B)
+            if (trimmedLine.includes("->")) {
+              const parts = trimmedLine.split("->");
+              if (parts.length !== 2 || !parts[0].trim() || !parts[1].trim()) {
+                throw new Error(
+                  "Formato inválido para aresta direcionada. Use: 'A->B' ou 'A->B 5'"
+                );
+              }
+              if (isDirected === false) {
+                throw new Error(
+                  "Grafos mistos: Não é possível ter arestas direcionadas e não direcionadas"
+                );
+              }
+              isDirected = true;
+              hasValidEdge = true;
+            }
+            // Check for valid undirected edge format (A - B)
+            else if (trimmedLine.includes(" - ")) {
+              const parts = trimmedLine.split(" - ");
+              if (parts.length !== 2 || !parts[0].trim() || !parts[1].trim()) {
+                throw new Error(
+                  "Formato inválido para aresta não direcionada. Use: 'A - B' ou 'A - B 5'"
+                );
+              }
+              if (isDirected === true) {
+                throw new Error(
+                  "Grafos mistos: Não é possível ter arestas direcionadas e não direcionadas"
+                );
+              }
+              isDirected = false;
+              hasValidEdge = true;
+            }
+          }
+
+          // Check if there are any valid edges
+          if (!hasValidEdge) {
+            throw new Error("O grafo deve ter pelo menos uma aresta válida");
+          }
+
+          const graph = new Graph(false);
+          const processedEdges = new Set();
+
+          // Second pass: build the graph
+          for (const line of lines) {
+            const trimmedLine = line.trim();
+            if (trimmedLine === "" || trimmedLine.startsWith("#")) continue;
+
+            let source,
+              destination,
+              weight = 0;
+            let parts;
+
+            if (isDirected) {
+              parts = trimmedLine.split("->");
+              [source, destination] = parts;
+            } else {
+              parts = trimmedLine.split(" - ");
+              [source, destination] = parts;
+            }
+
+            // Parse source and destination with potential weight
+            let destParts = destination.trim().split(" ");
+            destination = destParts[0];
+            weight = destParts.length > 1 ? parseInt(destParts[1]) || 0 : 0;
+
+            if (!isDirected) {
+              const edgeKey1 = `${source}-${destination}`;
+              const edgeKey2 = `${destination}-${source}`;
+              if (processedEdges.has(edgeKey1) || processedEdges.has(edgeKey2))
+                continue;
+              processedEdges.add(edgeKey1);
+            }
+
+            graph.addEdge(source.trim(), destination, weight);
+          }
+
+          // Final validation: check if graph has vertices and edges
+          if (graph.vertices.size === 0) {
+            throw new Error("O grafo não pode estar vazio");
+          }
+
+          if (graph.edges.length === 0) {
+            throw new Error("O grafo deve ter pelo menos uma aresta");
+          }
+
+          return graph;
+        }
+
+        // Generate DOT representation of the graph
+        function generateDotGraph(
+          graph,
+          highlightedVertex = null,
+          highlightedEdges = [],
+          visitedVertices = [],
+          seenVertices = new Set()
+        ) {
+          const isDirected = graph.isDirected;
+          let dotContent = `${isDirected ? "digraph" : "graph"} G {\n`;
+          dotContent +=
+            '  node [style=filled, fillcolor="lightblue", fontname="Arial"];\n';
+          dotContent += `  edge [${
+            isDirected ? "arrowhead=vee, arrowsize=0.8" : ""
+          }];\n`;
+
+          // Add vertices with state-based highlighting
+          for (const vertex of graph.vertices) {
+            let nodeAttributes = "";
+
+            if (vertex === highlightedVertex) {
+              // Currently processing vertex (red)
+              nodeAttributes =
+                ' [fillcolor="#ff6347", color="red", penwidth=3]';
+            } else if (visitedVertices.includes(vertex)) {
+              // Visited vertices (grey)
+              nodeAttributes = ' [fillcolor="#a9a9a9", color="#696969"]';
+            } else if (seenVertices.has(vertex)) {
+              // Seen but not visited vertices (green)
+              nodeAttributes = ' [fillcolor="#90EE90", color="#006400"]';
+            }
+
+            dotContent += `  "${vertex}"${nodeAttributes};\n`;
+          }
+
+          // Process edges with deduplication
+          const processedEdges = new Set();
+
+          for (const edge of graph.edges) {
+            const edgeKey = isDirected
+              ? `${edge.source}->${edge.destination}`
+              : `${edge.source}--${edge.destination}`;
+            const reverseKey = `${edge.destination}--${edge.source}`;
+
+            if (!isDirected && processedEdges.has(reverseKey)) {
+              continue;
+            }
+
+            if (!processedEdges.has(edgeKey)) {
+              processedEdges.add(edgeKey);
+
+              const edgeOp = isDirected ? "->" : "--";
+
+              // Check if this edge should be highlighted
+              let edgeAttributes = "";
+              if (
+                isEdgeHighlighted(
+                  edge.source,
+                  edge.destination,
+                  highlightedEdges
+                )
+              ) {
+                edgeAttributes = ' [color="#ff6347", penwidth=3]';
+              }
+
+              dotContent += `  "${edge.source}" ${edgeOp} "${
+                edge.destination
+              }"${edgeAttributes};\n`;
+            }
+          }
+
+          dotContent += "}";
+          return dotContent;
+        }
+
+        function isEdgeHighlighted(source, destination, highlightedEdges) {
+          return highlightedEdges.some(
+            edge =>
+              (edge.source === source && edge.destination === destination) ||
+              (!currentGraph.isDirected &&
+                edge.source === destination &&
+                edge.destination === source)
+          );
+        }
+
+        // Render graph with viz.js
+        function renderGraph(
+          graph,
+          highlightedVertex = null,
+          highlightedEdges = [],
+          visitedVertices = [],
+          seenVertices = new Set()
+        ) {
+          const dotGraph = generateDotGraph(
+            graph,
+            highlightedVertex,
+            highlightedEdges,
+            visitedVertices,
+            seenVertices
+          );
+
+          vizInstance
+            .renderSVGElement(dotGraph)
+            .then(element => {
+              // Clear the previous graph
+              graphVisualization.innerHTML = "";
+              graphVisualization.appendChild(element);
+
+              panZoomInstance = svgPanZoom(element, {
+                zoomEnabled: true,
+                controlIconsEnabled: true,
+                minZoom: 0.1,
+                maxZoom: 10,
+                fit: true,
+                center: true,
+                onZoom: zoom => {
+                  currentZoom = zoom; // Update the current zoom level
+                },
+                onPan: pan => {}
+              });
+
+              // Restore the previous zoom level and pan position
+              panZoomInstance.zoom(currentZoom); // Restore zoom
+              panZoomInstance.panBy(currentPan); // Restore pan position
+
+              // Optional: update pan/zoom on window resize
+              window.addEventListener("resize", () => {
+                panZoomInstance.resize();
+                panZoomInstance.center();
+              });
+            })
+            .catch(error => {
+              console.error("Error rendering graph:", error);
+              graphVisualization.innerHTML = `<p>Error rendering graph: ${
+                error.message
+              }</p>`;
+            });
+        }
+
+        // DFS algorithm
+        function dfs(graph, startVertex) {
+          if (!graph.vertices.has(startVertex)) return new Set();
+
+          const visited = new Set();
+          const stack = [startVertex];
+
+          while (stack.length > 0) {
+            const vertex = stack.pop();
+
+            if (!visited.has(vertex)) {
+              visited.add(vertex);
+
+              const neighbors = graph.getNeighbors(vertex);
+              for (let i = neighbors.length - 1; i >= 0; i--) {
+                const neighbor = neighbors[i];
+                // Don't add if already visited or already in stack
+                if (!visited.has(neighbor) && !stack.includes(neighbor)) {
+                  stack.push(neighbor);
+                }
+              }
+            }
+          }
+
+          return visited;
+        }
+
+        // Prepare DFS steps for visualization
+        function prepareDfsSteps(graph, startVertex) {
+          algorithmSteps = [];
+          visitedVertices = new Set();
+          seenVertices = new Set([startVertex]); // Track seen vertices
+          const stack = [startVertex];
+
+          // Initial step - show start vertex as seen
+          algorithmSteps.push({
+            type: "initialize",
+            vertex: startVertex,
+            stack: [...stack],
+            visited: new Set(),
+            seen: new Set(seenVertices),
+            highlightedEdges: []
+          });
+
+          while (stack.length > 0) {
+            const vertex = stack.pop();
+
+            if (!visitedVertices.has(vertex)) {
+              // Vertex processing step - turn it grey
+              visitedVertices.add(vertex);
+              algorithmSteps.push({
+                type: "visit",
+                vertex: vertex,
+                stack: [...stack],
+                visited: new Set(visitedVertices),
+                seen: new Set(seenVertices),
+                highlightedEdges: []
+              });
+
+              const neighbors = graph.getNeighbors(vertex);
+              const highlightedEdges = [];
+
+              // Add neighbors to stack in reverse order for correct DFS
+              for (let i = neighbors.length - 1; i >= 0; i--) {
+                const neighbor = neighbors[i];
+                if (
+                  !visitedVertices.has(neighbor) &&
+                  !seenVertices.has(neighbor)
+                ) {
+                  stack.push(neighbor);
+                  seenVertices.add(neighbor); // Mark as seen when added to stack
+                  highlightedEdges.push({
+                    source: vertex,
+                    destination: neighbor
+                  });
+                }
+              }
+
+              // Only add the exploring step if there are new neighbors to explore
+              if (highlightedEdges.length > 0) {
+                algorithmSteps.push({
+                  type: "explore",
+                  vertex: vertex,
+                  stack: [...stack],
+                  visited: new Set(visitedVertices),
+                  seen: new Set(seenVertices),
+                  highlightedEdges: highlightedEdges
+                });
+              }
+            }
+          }
+        }
+
+        // BFS algorithm
+        function bfs(graph, startVertex) {
+          if (!graph.vertices.has(startVertex)) return new Set();
+
+          const visited = new Set();
+          const queue = [startVertex];
+          visited.add(startVertex);
+
+          while (queue.length > 0) {
+            const vertex = queue.shift();
+
+            const neighbors = graph.getNeighbors(vertex);
+            for (const neighbor of neighbors) {
+              if (!visited.has(neighbor)) {
+                visited.add(neighbor);
+                queue.push(neighbor);
+              }
+            }
+          }
+
+          return visited;
+        }
+
+        // Prepare BFS steps for visualization
+        function prepareBfsSteps(graph, startVertex) {
+          algorithmSteps = [];
+          visitedVertices = new Set();
+          seenVertices = new Set([startVertex]); // Track seen vertices
+          const queue = [startVertex];
+          visitedVertices.add(startVertex);
+
+          // Initial step - show start vertex as seen
+          algorithmSteps.push({
+            type: "initialize",
+            vertex: startVertex,
+            queue: [...queue],
+            visited: new Set(visitedVertices),
+            seen: new Set(seenVertices),
+            highlightedEdges: []
+          });
+
+          while (queue.length > 0) {
+            const vertex = queue.shift();
+
+            // Vertex processing step - turn it grey
+            algorithmSteps.push({
+              type: "visit",
+              vertex: vertex,
+              queue: [...queue],
+              visited: new Set(visitedVertices),
+              seen: new Set(seenVertices),
+              highlightedEdges: []
+            });
+
+            const neighbors = graph.getNeighbors(vertex);
+            const highlightedEdges = [];
+
+            // Process each neighbor
+            for (const neighbor of neighbors) {
+              if (
+                !visitedVertices.has(neighbor) &&
+                !seenVertices.has(neighbor)
+              ) {
+                seenVertices.add(neighbor); // Mark as seen when discovered
+                queue.push(neighbor);
+                highlightedEdges.push({
+                  source: vertex,
+                  destination: neighbor
+                });
+              }
+            }
+
+            // Only add the exploring step if there are new neighbors to explore
+            if (highlightedEdges.length > 0) {
+              algorithmSteps.push({
+                type: "explore",
+                vertex: vertex,
+                queue: [...queue],
+                visited: new Set(visitedVertices),
+                seen: new Set(seenVertices),
+                highlightedEdges: highlightedEdges
+              });
+            }
+
+            // After exploring, mark current vertex as visited
+            visitedVertices.add(vertex);
+          }
+        }
+
+        // Executar próximo passo na visualização
+        function executeNextStep() {
+          if (currentStepIndex >= algorithmSteps.length - 1) {
+            setStatus("Algoritmo concluído!");
+            return;
+          }
+
+          currentStepIndex++;
+          const step = algorithmSteps[currentStepIndex];
+          const visitedArray = Array.from(step.visited);
+          const container = currentAlgorithm === "dfs" ? "Pilha" : "Fila";
+          const containerContents =
+            currentAlgorithm === "dfs" ? step.stack : step.queue;
+
+          switch (step.type) {
+            case "initialize":
+              setStatus(
+                `Iniciando ${
+                  currentAlgorithm === "dfs"
+                    ? "DFS (Busca em Profundidade)"
+                    : "BFS (Busca em Largura)"
+                } a partir do vértice ${step.vertex}`
+              );
+              break;
+            case "visit":
+              setStatus(
+                `Visitando vértice: ${
+                  step.vertex
+                }. ${container}: [${containerContents.join(", ")}]`
+              );
+              break;
+            case "explore":
+              setStatus(
+                `Explorando vizinhos de ${
+                  step.vertex
+                }. ${container}: [${containerContents.join(", ")}]`
+              );
+              break;
+          }
+
+          renderGraph(
+            currentGraph,
+            step.vertex,
+            step.highlightedEdges,
+            visitedArray,
+            step.seen
+          );
+        }
+
+        // Reproduzir todos os passos restantes com animação
+        function playAllSteps() {
+          if (currentStepIndex >= algorithmSteps.length - 1) {
+            return;
+          }
+
+          executeNextStep();
+
+          animationTimeout = setTimeout(() => {
+            playAllSteps();
+          }, 1000);
+        }
+
+        // Verificar conectividade
+        function checkConnectivity(graph, algorithm, startVertex) {
+          const vertices = Array.from(graph.vertices);
+          if (vertices.length === 0) return true;
+
+          let visited;
+          if (algorithm === "dfs") {
+            visited = dfs(graph, startVertex);
+          } else {
+            visited = bfs(graph, startVertex);
+          }
+          resetVisualization();
+          renderGraph(currentGraph);
+          return visited.size === graph.vertices.size;
+        }
+      });
+    </script>
+  </body>
 </html>
